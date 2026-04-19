@@ -70,6 +70,18 @@ namespace PokeBlack2.Foundation.Editor
         [DataMember(Name = "mapLookupEntries")]
         public List<NormalizedMapLookupEntry> MapLookupEntries { get; set; } = new List<NormalizedMapLookupEntry>();
 
+        [DataMember(Name = "mapContainerLayoutCount")]
+        public int MapContainerLayoutCount { get; set; }
+
+        [DataMember(Name = "permissionGridCandidateMapCount")]
+        public int PermissionGridCandidateMapCount { get; set; }
+
+        [DataMember(Name = "permissionGridCandidateCount")]
+        public int PermissionGridCandidateCount { get; set; }
+
+        [DataMember(Name = "mapContainerLayouts")]
+        public List<NormalizedMapContainerLayout> MapContainerLayouts { get; set; } = new List<NormalizedMapContainerLayout>();
+
         [DataMember(Name = "candidateCount")]
         public int CandidateCount { get; set; }
 
@@ -165,6 +177,87 @@ namespace PokeBlack2.Foundation.Editor
 
         [DataMember(Name = "isIdentityMapping")]
         public bool IsIdentityMapping { get; set; }
+    }
+
+    [Serializable]
+    [DataContract]
+    public sealed class NormalizedMapContainerLayout
+    {
+        [DataMember(Name = "mapContainerIndex")]
+        public int MapContainerIndex { get; set; }
+
+        [DataMember(Name = "containerTag")]
+        public string ContainerTag { get; set; } = string.Empty;
+
+        [DataMember(Name = "sectionCount")]
+        public int SectionCount { get; set; }
+
+        [DataMember(Name = "modelSectionCount")]
+        public int ModelSectionCount { get; set; }
+
+        [DataMember(Name = "permissionGridCandidateCount")]
+        public int PermissionGridCandidateCount { get; set; }
+
+        [DataMember(Name = "sections")]
+        public List<NormalizedMapContainerSection> Sections { get; set; } = new List<NormalizedMapContainerSection>();
+
+        [DataMember(Name = "permissionGridCandidates")]
+        public List<NormalizedPermissionGridCandidate> PermissionGridCandidates { get; set; } = new List<NormalizedPermissionGridCandidate>();
+    }
+
+    [Serializable]
+    [DataContract]
+    public sealed class NormalizedMapContainerSection
+    {
+        [DataMember(Name = "sectionIndex")]
+        public int SectionIndex { get; set; }
+
+        [DataMember(Name = "offset")]
+        public int Offset { get; set; }
+
+        [DataMember(Name = "size")]
+        public int Size { get; set; }
+
+        [DataMember(Name = "startsWithModelMagic")]
+        public bool StartsWithModelMagic { get; set; }
+
+        [DataMember(Name = "isPermissionGridCandidate")]
+        public bool IsPermissionGridCandidate { get; set; }
+    }
+
+    [Serializable]
+    [DataContract]
+    public sealed class NormalizedPermissionGridCandidate
+    {
+        [DataMember(Name = "sectionIndex")]
+        public int SectionIndex { get; set; }
+
+        [DataMember(Name = "width")]
+        public int Width { get; set; }
+
+        [DataMember(Name = "height")]
+        public int Height { get; set; }
+
+        [DataMember(Name = "primaryCellCount")]
+        public int PrimaryCellCount { get; set; }
+
+        [DataMember(Name = "recordStrideBytes")]
+        public int RecordStrideBytes { get; set; }
+
+        [DataMember(Name = "recordCount")]
+        public int RecordCount { get; set; }
+
+        [DataMember(Name = "planeCount")]
+        public int PlaneCount { get; set; }
+
+        [DataMember(Name = "trailingRecordCount")]
+        public int TrailingRecordCount { get; set; }
+
+        [DataMember(Name = "recordTokenCount")]
+        public int RecordTokenCount { get; set; }
+
+        [DataMember(Name = "recordTokens")]
+        public List<string> RecordTokens { get; set; } = new List<string>();
     }
 
     [Serializable]

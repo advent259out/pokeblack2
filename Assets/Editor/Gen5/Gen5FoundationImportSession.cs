@@ -394,6 +394,158 @@ namespace PokeBlack2.Foundation.Editor
                     }
                 }
 
+                if (string.Equals(container.Id, "map-containers", StringComparison.Ordinal))
+                {
+                    int mapContainerLayoutCount = container.MapContainerLayouts == null ? 0 : container.MapContainerLayouts.Count;
+                    if (container.MapContainerLayoutCount != mapContainerLayoutCount)
+                    {
+                        throw new InvalidDataException(
+                            $"Normalized map container '{container.Id}' layout count '{container.MapContainerLayoutCount}' does not match the layout entry count '{mapContainerLayoutCount}'.");
+                    }
+
+                    if (container.MemberCount != mapContainerLayoutCount)
+                    {
+                        throw new InvalidDataException(
+                            $"Normalized map container '{container.Id}' member count '{container.MemberCount}' does not match the map container layout entry count '{mapContainerLayoutCount}'.");
+                    }
+
+                    int permissionGridCandidateMapCount = 0;
+                    int permissionGridCandidateCount = 0;
+                    int expectedMapContainerIndex = 0;
+                    foreach (NormalizedMapContainerLayout layout in container.MapContainerLayouts ?? new List<NormalizedMapContainerLayout>())
+                    {
+                        if (layout == null)
+                        {
+                            throw new InvalidDataException($"Normalized map container layout in container '{container.Id}' is required.");
+                        }
+
+                        if (layout.MapContainerIndex != expectedMapContainerIndex)
+                        {
+                            throw new InvalidDataException(
+                                $"Normalized map container layout ordering in container '{container.Id}' expected map container index '{expectedMapContainerIndex}', but decoded '{layout.MapContainerIndex}'.");
+                        }
+
+                        int sectionCount = layout.Sections == null ? 0 : layout.Sections.Count;
+                        if (layout.SectionCount != sectionCount)
+                        {
+                            throw new InvalidDataException(
+                                $"Normalized map container layout '{layout.MapContainerIndex}' in container '{container.Id}' section count '{layout.SectionCount}' does not match the section entry count '{sectionCount}'.");
+                        }
+
+                        int modelSectionCount = 0;
+                        foreach (NormalizedMapContainerSection section in layout.Sections ?? new List<NormalizedMapContainerSection>())
+                        {
+                            if (section == null)
+                            {
+                                throw new InvalidDataException(
+                                    $"Normalized map container section in layout '{layout.MapContainerIndex}' is required.");
+                            }
+
+                            if (section.SectionIndex < 0 || section.SectionIndex >= layout.SectionCount)
+                            {
+                                throw new InvalidDataException(
+                                    $"Normalized map container section '{section.SectionIndex}' in layout '{layout.MapContainerIndex}' is outside the declared section count '{layout.SectionCount}'.");
+                            }
+
+                            if (section.Size < 0 || section.Offset < 0)
+                            {
+                                throw new InvalidDataException(
+                                    $"Normalized map container section '{section.SectionIndex}' in layout '{layout.MapContainerIndex}' requires non-negative offset and size.");
+                            }
+
+                            if (section.StartsWithModelMagic)
+                            {
+                                modelSectionCount += 1;
+                            }
+                        }
+
+                        if (layout.ModelSectionCount != modelSectionCount)
+                        {
+                            throw new InvalidDataException(
+                                $"Normalized map container layout '{layout.MapContainerIndex}' model section count '{layout.ModelSectionCount}' does not match the decoded model section count '{modelSectionCount}'.");
+                        }
+
+                        int layoutPermissionGridCandidateCount = layout.PermissionGridCandidates == null ? 0 : layout.PermissionGridCandidates.Count;
+                        if (layout.PermissionGridCandidateCount != layoutPermissionGridCandidateCount)
+                        {
+                            throw new InvalidDataException(
+                                $"Normalized map container layout '{layout.MapContainerIndex}' permission grid candidate count '{layout.PermissionGridCandidateCount}' does not match the candidate entry count '{layoutPermissionGridCandidateCount}'.");
+                        }
+
+                        foreach (NormalizedPermissionGridCandidate candidate in layout.PermissionGridCandidates ?? new List<NormalizedPermissionGridCandidate>())
+                        {
+                            if (candidate == null)
+                            {
+                                throw new InvalidDataException(
+                                    $"Normalized permission grid candidate in layout '{layout.MapContainerIndex}' is required.");
+                            }
+
+                            if (candidate.Width <= 0 || candidate.Height <= 0)
+                            {
+                                throw new InvalidDataException(
+                                    $"Normalized permission grid candidate in layout '{layout.MapContainerIndex}' requires positive width and height, but decoded '{candidate.Width}x{candidate.Height}'.");
+                            }
+
+                            if (candidate.PrimaryCellCount != candidate.Width * candidate.Height)
+                            {
+                                throw new InvalidDataException(
+                                    $"Normalized permission grid candidate in layout '{layout.MapContainerIndex}' primary cell count '{candidate.PrimaryCellCount}' does not match width*height '{candidate.Width * candidate.Height}'.");
+                            }
+
+                            if (candidate.RecordStrideBytes != 8)
+                            {
+                                throw new InvalidDataException(
+                                    $"Normalized permission grid candidate in layout '{layout.MapContainerIndex}' record stride '{candidate.RecordStrideBytes}' must remain 8 bytes in this foundation phase.");
+                            }
+
+                            int recordTokenCount = candidate.RecordTokens == null ? 0 : candidate.RecordTokens.Count;
+                            if (candidate.RecordTokenCount != recordTokenCount)
+                            {
+                                throw new InvalidDataException(
+                                    $"Normalized permission grid candidate in layout '{layout.MapContainerIndex}' record token count '{candidate.RecordTokenCount}' does not match the token entry count '{recordTokenCount}'.");
+                            }
+
+                            if (candidate.RecordCount != recordTokenCount)
+                            {
+                                throw new InvalidDataException(
+                                    $"Normalized permission grid candidate in layout '{layout.MapContainerIndex}' record count '{candidate.RecordCount}' does not match the token entry count '{recordTokenCount}'.");
+                            }
+
+                            if (candidate.PlaneCount <= 0)
+                            {
+                                throw new InvalidDataException(
+                                    $"Normalized permission grid candidate in layout '{layout.MapContainerIndex}' requires at least one plane, but decoded '{candidate.PlaneCount}'.");
+                            }
+
+                            if ((candidate.PlaneCount * candidate.PrimaryCellCount) + candidate.TrailingRecordCount != candidate.RecordCount)
+                            {
+                                throw new InvalidDataException(
+                                    $"Normalized permission grid candidate in layout '{layout.MapContainerIndex}' record decomposition is inconsistent with plane count '{candidate.PlaneCount}', primary cell count '{candidate.PrimaryCellCount}', trailing count '{candidate.TrailingRecordCount}', and record count '{candidate.RecordCount}'.");
+                            }
+                        }
+
+                        if (layout.PermissionGridCandidateCount > 0)
+                        {
+                            permissionGridCandidateMapCount += 1;
+                        }
+
+                        permissionGridCandidateCount += layout.PermissionGridCandidateCount;
+                        expectedMapContainerIndex += 1;
+                    }
+
+                    if (container.PermissionGridCandidateMapCount != permissionGridCandidateMapCount)
+                    {
+                        throw new InvalidDataException(
+                            $"Normalized map container '{container.Id}' permission grid candidate map count '{container.PermissionGridCandidateMapCount}' does not match the decoded map count '{permissionGridCandidateMapCount}'.");
+                    }
+
+                    if (container.PermissionGridCandidateCount != permissionGridCandidateCount)
+                    {
+                        throw new InvalidDataException(
+                            $"Normalized map container '{container.Id}' permission grid candidate count '{container.PermissionGridCandidateCount}' does not match the decoded candidate count '{permissionGridCandidateCount}'.");
+                    }
+                }
+
                 if (string.Equals(container.Id, "map-side-lookup-candidate", StringComparison.Ordinal))
                 {
                     int mapSideLookupEntryCount = container.MapSideLookupEntries == null ? 0 : container.MapSideLookupEntries.Count;
