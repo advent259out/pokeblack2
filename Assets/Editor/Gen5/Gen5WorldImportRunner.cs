@@ -188,9 +188,12 @@ namespace PokeBlack2.Foundation.Editor
             }
 
             WorldMapReferenceContract[] mapReferences = BuildMapReferences(mapLookupContainer);
+            Dictionary<int, NormalizedMapContainerLayout> layoutsByMapContainerIndex =
+                BuildMapContainerLayoutsByMapContainerIndex(mapContainer);
             WorldSceneContract[] scenes = BuildScenes(
                 zoneHeaderContainer,
                 mapLookupContainer,
+                layoutsByMapContainerIndex,
                 mapContainer.MemberCount,
                 groupIndex.TotalScriptTextBindings);
             WorldMapSideLookupContract[] mapSideLookups = BuildMapSideLookups(mapSideLookupContainer);
@@ -206,6 +209,7 @@ namespace PokeBlack2.Foundation.Editor
         private static WorldSceneContract[] BuildScenes(
             NormalizedMapContainer zoneHeaderContainer,
             NormalizedMapContainer mapLookupContainer,
+            IReadOnlyDictionary<int, NormalizedMapContainerLayout> layoutsByMapContainerIndex,
             int mapContainerCount,
             int totalScriptTextBindings)
         {
@@ -225,7 +229,10 @@ namespace PokeBlack2.Foundation.Editor
                     mapLookupContainer,
                     mapContainerCount);
                 countedBindings += zone.ScriptTextBindingCount;
-                scenes.Add(CreateScene(zone, mapLookupEntry));
+                scenes.Add(CreateScene(
+                    zone,
+                    mapLookupEntry,
+                    ResolveMapContainerLayout(layoutsByMapContainerIndex, mapLookupEntry.ResolvedMapIndex)));
             }
 
             if (zoneHeaderContainer.ZoneCount != scenes.Count)
@@ -385,6 +392,20 @@ namespace PokeBlack2.Foundation.Editor
                 }
             }
 
+            if (string.Equals(container.Id, "map-containers", StringComparison.Ordinal))
+            {
+                if (container.MapContainerLayouts == null)
+                {
+                    throw new InvalidDataException("Map container requires a mapContainerLayouts list.");
+                }
+
+                if (container.MapContainerLayoutCount != container.MapContainerLayouts.Count)
+                {
+                    throw new InvalidDataException(
+                        $"Map container declares '{container.MapContainerLayoutCount}' layouts, but decoded layout entry count is '{container.MapContainerLayouts.Count}'.");
+                }
+            }
+
             if (string.Equals(container.Id, "map-lookup", StringComparison.Ordinal) &&
                 container.MapLookupEntries == null)
             {
@@ -532,6 +553,14 @@ namespace PokeBlack2.Foundation.Editor
 
         private static WorldSceneContract CreateScene(NormalizedZoneHeader zone, NormalizedMapLookupEntry mapLookupEntry)
         {
+            return CreateScene(zone, mapLookupEntry, null);
+        }
+
+        private static WorldSceneContract CreateScene(
+            NormalizedZoneHeader zone,
+            NormalizedMapLookupEntry mapLookupEntry,
+            NormalizedMapContainerLayout mapContainerLayout)
+        {
             string zoneToken = $"zone-{zone.ZoneIndex:D4}";
             return new WorldSceneContract
             {
@@ -543,13 +572,7 @@ namespace PokeBlack2.Foundation.Editor
                 EventTextArchiveId = zone.EventTextArchiveId ?? string.Empty,
                 EventTextBankIndex = zone.EventTextBankIndex,
                 MapReference = CreateMapReference(mapLookupEntry),
-                PermissionGrid = new PermissionGridContract
-                {
-                    GridId = $"{zoneToken}:permission-grid:unresolved",
-                    Width = 0,
-                    Height = 0,
-                    CellTokens = Array.Empty<string>(),
-                },
+                PermissionGrid = CreatePermissionGrid(zoneToken, mapContainerLayout),
                 CameraProfile = new CameraProfileContract
                 {
                     ProfileId = $"{zoneToken}:camera:unresolved",
@@ -559,6 +582,116 @@ namespace PokeBlack2.Foundation.Editor
                 },
                 SeasonalVariants = Array.Empty<SeasonProfileContract>(),
             };
+        }
+
+        private static Dictionary<int, NormalizedMapContainerLayout> BuildMapContainerLayoutsByMapContainerIndex(
+            NormalizedMapContainer mapContainer)
+        {
+            Dictionary<int, NormalizedMapContainerLayout> layoutsByMapContainerIndex =
+                new Dictionary<int, NormalizedMapContainerLayout>();
+            foreach (NormalizedMapContainerLayout layout in mapContainer.MapContainerLayouts ?? new List<NormalizedMapContainerLayout>())
+            {
+                if (layout == null)
+                {
+                    continue;
+                }
+
+                layoutsByMapContainerIndex[layout.MapContainerIndex] = layout;
+            }
+
+            return layoutsByMapContainerIndex;
+        }
+
+        private static NormalizedMapContainerLayout ResolveMapContainerLayout(
+            IReadOnlyDictionary<int, NormalizedMapContainerLayout> layoutsByMapContainerIndex,
+            int resolvedMapIndex)
+        {
+            if (layoutsByMapContainerIndex == null || resolvedMapIndex < 0)
+            {
+                return null;
+            }
+
+            return layoutsByMapContainerIndex.TryGetValue(resolvedMapIndex, out NormalizedMapContainerLayout layout)
+                ? layout
+                : null;
+        }
+
+        private static PermissionGridContract CreatePermissionGrid(
+            string zoneToken,
+            NormalizedMapContainerLayout mapContainerLayout)
+        {
+            if (mapContainerLayout == null ||
+                mapContainerLayout.PermissionGridCandidates == null ||
+                mapContainerLayout.PermissionGridCandidates.Count == 0)
+            {
+                return new PermissionGridContract
+                {
+                    GridId = $"{zoneToken}:permission-grid:unresolved",
+                    Width = 0,
+                    Height = 0,
+                    CellTokens = Array.Empty<string>(),
+                };
+            }
+
+            NormalizedPermissionGridCandidate candidate = mapContainerLayout.PermissionGridCandidates[0];
+            if (candidate == null || candidate.Width <= 0 || candidate.Height <= 0)
+            {
+                return new PermissionGridContract
+                {
+                    GridId = $"{zoneToken}:permission-grid:unresolved",
+                    Width = 0,
+                    Height = 0,
+                    CellTokens = Array.Empty<string>(),
+                };
+            }
+
+            return new PermissionGridContract
+            {
+                GridId =
+                    $"{zoneToken}:permission-grid:{mapContainerLayout.ContainerTag.ToLowerInvariant()}:s{candidate.SectionIndex}:p{candidate.PlaneCount}:t{candidate.TrailingRecordCount}",
+                Width = candidate.Width,
+                Height = candidate.Height,
+                CellTokens = BuildPermissionGridCellTokens(candidate),
+            };
+        }
+
+        private static string[] BuildPermissionGridCellTokens(NormalizedPermissionGridCandidate candidate)
+        {
+            if (candidate == null ||
+                candidate.RecordTokens == null ||
+                candidate.RecordTokens.Count == 0 ||
+                candidate.PrimaryCellCount <= 0)
+            {
+                return Array.Empty<string>();
+            }
+
+            int planeCount = Math.Max(1, candidate.PlaneCount);
+            int cellCount = candidate.PrimaryCellCount;
+            List<string> cellTokens = new List<string>(cellCount);
+            for (int cellIndex = 0; cellIndex < cellCount; cellIndex++)
+            {
+                if (planeCount == 1)
+                {
+                    cellTokens.Add(candidate.RecordTokens[cellIndex]);
+                    continue;
+                }
+
+                List<string> planeTokens = new List<string>(planeCount);
+                for (int planeIndex = 0; planeIndex < planeCount; planeIndex++)
+                {
+                    int recordIndex = cellIndex + (planeIndex * cellCount);
+                    if (recordIndex >= candidate.RecordTokens.Count)
+                    {
+                        break;
+                    }
+
+                    planeTokens.Add(candidate.RecordTokens[recordIndex]);
+                }
+
+                cellTokens.Add(string.Join("|", planeTokens));
+            }
+
+            return cellTokens.ToArray();
         }
 
         private static WorldMapReferenceContract CreateMapReference(NormalizedMapLookupEntry lookupEntry)

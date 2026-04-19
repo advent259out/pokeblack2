@@ -583,10 +583,12 @@ namespace PokeBlack2.Foundation.Editor
                 Assert.That(zoneZero.MapReference.LogicalMapIndex, Is.EqualTo(0));
                 Assert.That(zoneZero.MapReference.ResolvedMapIndex, Is.EqualTo(0));
                 Assert.That(zoneZero.MapReference.IsIdentityMapping, Is.True);
-                Assert.That(zoneZero.PermissionGrid.GridId, Is.EqualTo("zone-0000:permission-grid:unresolved"));
-                Assert.That(zoneZero.PermissionGrid.Width, Is.EqualTo(0));
-                Assert.That(zoneZero.PermissionGrid.Height, Is.EqualTo(0));
-                Assert.That(zoneZero.PermissionGrid.CellTokens, Is.Empty);
+                Assert.That(zoneZero.PermissionGrid.GridId, Is.EqualTo("zone-0000:permission-grid:wb:s1:p1:t4"));
+                Assert.That(zoneZero.PermissionGrid.Width, Is.EqualTo(32));
+                Assert.That(zoneZero.PermissionGrid.Height, Is.EqualTo(32));
+                Assert.That(zoneZero.PermissionGrid.CellTokens, Has.Length.EqualTo(1024));
+                Assert.That(zoneZero.PermissionGrid.CellTokens[0], Is.EqualTo("0000000001008100"));
+                Assert.That(zoneZero.PermissionGrid.CellTokens[1023], Is.EqualTo("0000000001008100"));
                 Assert.That(zoneZero.CameraProfile.ProfileId, Is.EqualTo("zone-0000:camera:unresolved"));
                 Assert.That(zoneZero.CameraProfile.CameraMode, Is.EqualTo("unresolved"));
                 Assert.That(zoneZero.SeasonalVariants, Is.Empty);
@@ -598,6 +600,8 @@ namespace PokeBlack2.Foundation.Editor
                 Assert.That(zoneLast.MapReference.LogicalMapIndex, Is.EqualTo(426));
                 Assert.That(zoneLast.MapReference.ResolvedMapIndex, Is.EqualTo(425));
                 Assert.That(zoneLast.MapReference.IsIdentityMapping, Is.False);
+                Assert.That(zoneLast.PermissionGrid.GridId, Is.EqualTo("zone-0426:permission-grid:unresolved"));
+                Assert.That(zoneLast.PermissionGrid.CellTokens, Is.Empty);
                 Assert.That(artifacts.MapReferenceCount, Is.EqualTo(650));
                 Assert.That(artifacts.MapSideLookupCount, Is.EqualTo(652));
                 Assert.That(artifacts.FormatSummary(), Does.Contain("Imported 427 world scenes, 652 map side lookups, and 854 script bindings"));
