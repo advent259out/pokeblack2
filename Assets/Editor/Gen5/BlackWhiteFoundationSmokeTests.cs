@@ -22,6 +22,10 @@ namespace PokeBlack2.Foundation.Editor
         private const string FixtureRomInfoOutput = "Assets/Editor/Gen5/TestData/EmptyM0Fixture/normalized/metadata/rom-info.json";
         private const string FixtureSourceCatalogOutput = "Assets/Editor/Gen5/TestData/EmptyM0Fixture/normalized/metadata/source-catalog.json";
         private const string FixtureTextOutput = "Assets/Editor/Gen5/TestData/EmptyM0Fixture/normalized/text/index.json";
+        private const string ImportFixtureRoot = "Assets/Editor/Gen5/TestData/SyntheticImportFixture";
+        private const string ImportFixtureRomFilename = "fixture.nds";
+        private const string ImportFixtureRomSha1 = "0000000000000000000000000000000000000001";
+        private const long ImportFixtureRomSize = 1024L;
 
         [Test]
         public void Registry_Loads_EmptyFixtureManifest()
@@ -335,9 +339,9 @@ namespace PokeBlack2.Foundation.Editor
         }
 
         [Test]
-        public void TextImportRunner_Imports_Canonical_Text_Metadata_Assets()
+        public void TextImportRunner_Imports_Fixture_Text_Metadata_Assets()
         {
-            string root = CreateCanonicalTextImportSessionRoot();
+            string root = CreateFixtureTextImportSessionRoot();
             string generatedAssetsRoot = CreateTemporaryGeneratedAssetsRoot();
 
             try
@@ -352,6 +356,9 @@ namespace PokeBlack2.Foundation.Editor
                     profile,
                     artifacts.ContentManifestAssetPath,
                     artifacts.ContentVersion,
+                    expectedRomFilename: ImportFixtureRomFilename,
+                    expectedRomSha1: ImportFixtureRomSha1,
+                    expectedRomSize: ImportFixtureRomSize,
                     expectedPresentGroups: new[] { "text" },
                     expectedAbsentGroups: new[] { "maps", "scripts" });
 
@@ -361,29 +368,29 @@ namespace PokeBlack2.Foundation.Editor
                 Assert.That(artifacts.ContentManifestAssetPath, Is.EqualTo(CreateGeneratedContentManifestAssetPath(generatedAssetsRoot)));
                 Assert.That(contentManifest.AvailableGroups, Is.EqualTo(new[] { "text" }));
                 Assert.That(textDatabase.ArchiveCount, Is.EqualTo(2));
-                Assert.That(textDatabase.EntryCount, Is.EqualTo(760));
-                Assert.That(textDatabase.DecodedMessageCount, Is.EqualTo(56700));
+                Assert.That(textDatabase.EntryCount, Is.EqualTo(2));
+                Assert.That(textDatabase.DecodedMessageCount, Is.EqualTo(3));
                 Assert.That(textDatabase.TryGetArchive("system-text", out TextArchiveContract systemText), Is.True);
-                Assert.That(systemText.MemberCount, Is.EqualTo(288));
+                Assert.That(systemText.MemberCount, Is.EqualTo(1));
                 Assert.That(systemText.Entries[0].Index, Is.EqualTo(0));
                 Assert.That(systemText.Entries[0].Size, Is.GreaterThan(0));
-                Assert.That(systemText.Entries[0].Messages[0].Text, Is.EqualTo("No Answer"));
-                Assert.That(systemText.Entries[176].Messages[1].Text, Is.EqualTo("Cheren"));
-                Assert.That(systemText.Entries[176].Messages[1].IsCompressed, Is.True);
-                Assert.That(systemText.Entries[176].Messages[1].Tokens, Has.Length.EqualTo(1));
-                Assert.That(systemText.Entries[176].Messages[1].Tokens[0].Kind, Is.EqualTo("text"));
-                Assert.That(systemText.Entries[176].Messages[1].Tokens[0].Text, Is.EqualTo("Cheren"));
-                Assert.That(systemText.Entries[3].Messages[56].Tokens, Has.Length.EqualTo(7));
-                Assert.That(systemText.Entries[3].Messages[56].Tokens[1].Kind, Is.EqualTo("lineBreak"));
-                Assert.That(systemText.Entries[3].Messages[56].Tokens[2].Kind, Is.EqualTo("variable"));
-                Assert.That(systemText.Entries[3].Messages[56].Tokens[2].ControlCode, Is.EqualTo(256));
-                Assert.That(systemText.Entries[3].Messages[56].Tokens[2].Arguments, Is.EqualTo(new[] { 0 }));
-                Assert.That(systemText.Entries[3].Messages[56].Tokens[4].Kind, Is.EqualTo("pageBreak"));
-                Assert.That(systemText.Entries[3].Messages[62].Tokens[4].Kind, Is.EqualTo("carriageReturn"));
+                Assert.That(systemText.Entries[0].Messages[0].Text, Is.EqualTo("Fixture hello."));
+                Assert.That(systemText.Entries[0].Messages[1].Text, Is.EqualTo("Name:\\nVAR(256, 0)\\fNext page."));
+                Assert.That(systemText.Entries[0].Messages[1].IsCompressed, Is.False);
+                Assert.That(systemText.Entries[0].Messages[1].Tokens, Has.Length.EqualTo(5));
+                Assert.That(systemText.Entries[0].Messages[1].Tokens[0].Kind, Is.EqualTo("text"));
+                Assert.That(systemText.Entries[0].Messages[1].Tokens[0].Text, Is.EqualTo("Name:"));
+                Assert.That(systemText.Entries[0].Messages[1].Tokens[1].Kind, Is.EqualTo("lineBreak"));
+                Assert.That(systemText.Entries[0].Messages[1].Tokens[2].Kind, Is.EqualTo("variable"));
+                Assert.That(systemText.Entries[0].Messages[1].Tokens[2].ControlCode, Is.EqualTo(256));
+                Assert.That(systemText.Entries[0].Messages[1].Tokens[2].Arguments, Is.EqualTo(new[] { 0 }));
+                Assert.That(systemText.Entries[0].Messages[1].Tokens[3].Kind, Is.EqualTo("pageBreak"));
+                Assert.That(systemText.Entries[0].Messages[1].Tokens[4].Kind, Is.EqualTo("text"));
+                Assert.That(systemText.Entries[0].Messages[1].Tokens[4].Text, Is.EqualTo("Next page."));
                 Assert.That(textDatabase.TryGetArchive("event-text", out TextArchiveContract eventText), Is.True);
-                Assert.That(eventText.MemberCount, Is.EqualTo(472));
-                Assert.That(eventText.Entries[0].Messages[0].Text, Is.Not.Empty);
-                Assert.That(artifacts.FormatSummary(), Does.Contain("Imported 2 text archives, 760 text banks, and 56700 decoded text messages"));
+                Assert.That(eventText.MemberCount, Is.EqualTo(1));
+                Assert.That(eventText.Entries[0].Messages[0].Text, Is.EqualTo("Synthetic NPC hello."));
+                Assert.That(artifacts.FormatSummary(), Does.Contain("Imported 2 text archives, 2 text banks, and 3 decoded text messages"));
             }
             finally
             {
@@ -394,7 +401,7 @@ namespace PokeBlack2.Foundation.Editor
         [Test]
         public void TextImportRunner_Rejects_Preexisting_ContentManifest_With_Unsupported_Schema()
         {
-            string root = CreateCanonicalTextImportSessionRoot();
+            string root = CreateFixtureTextImportSessionRoot();
             string generatedAssetsRoot = CreateTemporaryGeneratedAssetsRoot();
 
             try
@@ -412,10 +419,10 @@ namespace PokeBlack2.Foundation.Editor
                         GameId = Gen5ImportProfile.GameId,
                         ContractFamily = GameContentProfile.DefaultContractFamily,
                         ProfileId = GameContentProfile.DefaultProfileId,
-                        RomFilename = "pokeblack.nds",
-                        RomSha1 = "a68b3bedf5c1e53556e41e59cdf396c20b331896",
-                        RomSize = 268435456,
-                        SourceGeneratedAt = "2026-04-18T00:00:00Z",
+                        RomFilename = ImportFixtureRomFilename,
+                        RomSha1 = ImportFixtureRomSha1,
+                        RomSize = ImportFixtureRomSize,
+                        SourceGeneratedAt = "2026-04-19T00:00:00Z",
                         AvailableGroups = new[] { "text" },
                     });
 
@@ -430,7 +437,7 @@ namespace PokeBlack2.Foundation.Editor
         [Test]
         public void TextImportRunner_Produces_Stable_ContentVersion_For_Identical_Input()
         {
-            string root = CreateCanonicalTextImportSessionRoot();
+            string root = CreateFixtureTextImportSessionRoot();
             string generatedAssetsRootA = CreateTemporaryGeneratedAssetsRoot();
             string generatedAssetsRootB = CreateTemporaryGeneratedAssetsRoot();
 
@@ -525,9 +532,9 @@ namespace PokeBlack2.Foundation.Editor
         }
 
         [Test]
-        public void ScriptImportRunner_Imports_Canonical_Script_Metadata_Assets()
+        public void ScriptImportRunner_Imports_Fixture_Script_Metadata_Assets()
         {
-            string root = CreateCanonicalScriptImportSessionRoot();
+            string root = CreateFixtureScriptImportSessionRoot();
             string generatedAssetsRoot = CreateTemporaryGeneratedAssetsRoot();
 
             try
@@ -541,6 +548,9 @@ namespace PokeBlack2.Foundation.Editor
                     profile,
                     artifacts.ContentManifestAssetPath,
                     artifacts.ContentVersion,
+                    expectedRomFilename: ImportFixtureRomFilename,
+                    expectedRomSha1: ImportFixtureRomSha1,
+                    expectedRomSize: ImportFixtureRomSize,
                     expectedPresentGroups: new[] { "maps", "scripts", "text" },
                     expectedAbsentGroups: new[] { "pokemon" });
 
@@ -551,28 +561,24 @@ namespace PokeBlack2.Foundation.Editor
                 Assert.That(profile.LoadScriptDatabase(), Is.SameAs(scriptDatabase));
                 Assert.That(artifacts.ContentManifestAssetPath, Is.EqualTo(CreateGeneratedContentManifestAssetPath(generatedAssetsRoot)));
                 Assert.That(contentManifest.AvailableGroups, Is.EqualTo(new[] { "maps", "scripts", "text" }));
-                Assert.That(scriptDatabase.ProgramCount, Is.EqualTo(899));
-                Assert.That(scriptDatabase.ProcedureCount, Is.EqualTo(3317));
-                Assert.That(scriptDatabase.ParsedProcedureCount, Is.EqualTo(535));
-                Assert.That(scriptDatabase.DialogueLineCount, Is.EqualTo(997));
-                Assert.That(scriptDatabase.ResolvedDialogueTextReferenceCount, Is.EqualTo(948));
+                Assert.That(scriptDatabase.ProgramCount, Is.EqualTo(1));
+                Assert.That(scriptDatabase.ProcedureCount, Is.EqualTo(1));
+                Assert.That(scriptDatabase.ParsedProcedureCount, Is.EqualTo(1));
+                Assert.That(scriptDatabase.DialogueLineCount, Is.EqualTo(1));
+                Assert.That(scriptDatabase.ResolvedDialogueTextReferenceCount, Is.EqualTo(1));
                 Assert.That(scriptDatabase.TryGetProgram("script-containers", 0, out ScriptProgramContract memberZero), Is.True);
-                Assert.That(memberZero.HeaderEntries[0].StartOffset, Is.EqualTo(16));
-                Assert.That(memberZero.Procedures[0].Instructions[0].Mnemonic, Is.EqualTo("LockAll"));
-                Assert.That(memberZero.Procedures[0].Instructions[1].Mnemonic, Is.EqualTo("PrepareSoundCue"));
-                Assert.That(memberZero.Procedures[0].Instructions[2].Mnemonic, Is.EqualTo("FacePlayer"));
-                Assert.That(scriptDatabase.TryGetProgram("script-containers", 2, out ScriptProgramContract memberTwo), Is.True);
-                Assert.That(memberTwo.DialogueLines.Length, Is.GreaterThan(0));
-                Assert.That(memberTwo.DialogueLines[0].Command, Is.EqualTo("message2"));
-                Assert.That(memberTwo.DialogueLines[0].Text.ArchiveId, Is.EqualTo("event-text"));
-                Assert.That(memberTwo.DialogueLines[0].Text.BankIndex, Is.EqualTo(3));
-                Assert.That(memberTwo.DialogueLines[0].Text.MessageIndex, Is.EqualTo(0));
-                Assert.That(textDatabase.TryGetMessage(memberTwo.DialogueLines[0].Text, out TextMessageContract resolvedMessage), Is.True);
-                Assert.That(
-                    resolvedMessage.Text,
-                    Is.EqualTo("Many people come here from White Forest.\\r\\nIf you enter White Forest and invite\\npeople, they might move here."));
-                Assert.That(artifacts.FormatSummary(), Does.Contain("Imported 899 script programs"));
-                Assert.That(artifacts.FormatSummary(), Does.Contain("948 resolved text references"));
+                Assert.That(memberZero.HeaderEntries[0].StartOffset, Is.EqualTo(0));
+                Assert.That(memberZero.Procedures[0].Instructions[0].Mnemonic, Is.EqualTo("Message"));
+                Assert.That(memberZero.Procedures[0].Instructions[1].Mnemonic, Is.EqualTo("End"));
+                Assert.That(memberZero.DialogueLines, Has.Length.EqualTo(1));
+                Assert.That(memberZero.DialogueLines[0].Command, Is.EqualTo("message"));
+                Assert.That(memberZero.DialogueLines[0].Text.ArchiveId, Is.EqualTo("event-text"));
+                Assert.That(memberZero.DialogueLines[0].Text.BankIndex, Is.EqualTo(0));
+                Assert.That(memberZero.DialogueLines[0].Text.MessageIndex, Is.EqualTo(0));
+                Assert.That(textDatabase.TryGetMessage(memberZero.DialogueLines[0].Text, out TextMessageContract resolvedMessage), Is.True);
+                Assert.That(resolvedMessage.Text, Is.EqualTo("Synthetic NPC hello."));
+                Assert.That(artifacts.FormatSummary(), Does.Contain("Imported 1 script programs"));
+                Assert.That(artifacts.FormatSummary(), Does.Contain("1 resolved text references"));
             }
             finally
             {
@@ -581,9 +587,9 @@ namespace PokeBlack2.Foundation.Editor
         }
 
         [Test]
-        public void WorldImportRunner_Imports_Canonical_World_Metadata_Assets()
+        public void WorldImportRunner_Imports_Fixture_World_Metadata_Assets()
         {
-            string root = CreateCanonicalWorldImportSessionRoot();
+            string root = CreateFixtureWorldImportSessionRoot();
             string generatedAssetsRoot = CreateTemporaryGeneratedAssetsRoot();
 
             try
@@ -595,6 +601,9 @@ namespace PokeBlack2.Foundation.Editor
                     profile,
                     artifacts.ContentManifestAssetPath,
                     artifacts.ContentVersion,
+                    expectedRomFilename: ImportFixtureRomFilename,
+                    expectedRomSha1: ImportFixtureRomSha1,
+                    expectedRomSize: ImportFixtureRomSize,
                     expectedPresentGroups: new[] { "maps" },
                     expectedAbsentGroups: new[] { "text", "scripts" });
 
@@ -603,94 +612,51 @@ namespace PokeBlack2.Foundation.Editor
                 Assert.That(profile.LoadWorldDatabase(), Is.SameAs(worldDatabase));
                 Assert.That(artifacts.ContentManifestAssetPath, Is.EqualTo(CreateGeneratedContentManifestAssetPath(generatedAssetsRoot)));
                 Assert.That(contentManifest.AvailableGroups, Is.EqualTo(new[] { "maps" }));
-                Assert.That(worldDatabase.SceneCount, Is.EqualTo(427));
-                Assert.That(worldDatabase.MapReferenceCount, Is.EqualTo(650));
-                Assert.That(worldDatabase.MapRouteCount, Is.EqualTo(650));
-                Assert.That(worldDatabase.MapSideLookupCount, Is.EqualTo(652));
-                Assert.That(worldDatabase.ScriptBindingCount, Is.EqualTo(854));
+                Assert.That(worldDatabase.SceneCount, Is.EqualTo(1));
+                Assert.That(worldDatabase.MapReferenceCount, Is.EqualTo(1));
+                Assert.That(worldDatabase.MapRouteCount, Is.EqualTo(1));
+                Assert.That(worldDatabase.MapSideLookupCount, Is.EqualTo(1));
+                Assert.That(worldDatabase.ScriptBindingCount, Is.EqualTo(2));
                 Assert.That(worldDatabase.TryGetMapReference(0, out WorldMapReferenceContract mapZero), Is.True);
                 Assert.That(mapZero.LogicalMapIndex, Is.EqualTo(0));
                 Assert.That(mapZero.ResolvedMapIndex, Is.EqualTo(0));
                 Assert.That(mapZero.IsIdentityMapping, Is.True);
-                Assert.That(worldDatabase.TryGetMapRoute(429, out WorldMapRouteContract route429), Is.True);
-                Assert.That(route429.ResolvedMapIndex, Is.EqualTo(200));
-                Assert.That(route429.CandidateSceneIds, Is.EqualTo(new[] { "zone-0200" }));
-                Assert.That(route429.CandidateZoneIndices, Is.EqualTo(new[] { 200 }));
-                Assert.That(route429.SideLookup.EntryIndex, Is.EqualTo(429));
-                Assert.That(route429.SideLookup.RawWord0, Is.EqualTo(13379));
-                Assert.That(route429.SideLookup.RawWord1, Is.EqualTo(120));
-                Assert.That(route429.SeasonalVariants, Has.Length.EqualTo(4));
-                Assert.That(route429.SeasonalVariants[0].SeasonId, Is.EqualTo("slot-0"));
-                Assert.That(route429.SeasonalVariants[0].VariantTokens, Is.EqualTo(new[] { "w00:0x0001", "w18:0x0400" }));
-                Assert.That(route429.SeasonalVariants[1].VariantTokens, Is.EqualTo(new[] { "w18:0x0400" }));
-                Assert.That(worldDatabase.TryGetSceneForLogicalMapIndex(429, out WorldSceneContract aliasUniqueScene), Is.True);
-                Assert.That(aliasUniqueScene.SceneId, Is.EqualTo("zone-0200"));
-                Assert.That(worldDatabase.TryGetMapRoute(462, out WorldMapRouteContract route462), Is.True);
-                Assert.That(route462.ResolvedMapIndex, Is.EqualTo(81));
-                Assert.That(route462.CandidateSceneIds, Is.EqualTo(new[] { "zone-0081", "zone-0082" }));
-                Assert.That(route462.CandidateZoneIndices, Is.EqualTo(new[] { 81, 82 }));
-                Assert.That(route462.SideLookup.EntryIndex, Is.EqualTo(462));
-                Assert.That(route462.SideLookup.RawWord0, Is.EqualTo(13379));
-                Assert.That(route462.SideLookup.RawWord1, Is.EqualTo(120));
-                Assert.That(route462.SeasonalVariants, Has.Length.EqualTo(4));
-                Assert.That(route462.SeasonalVariants[0].VariantTokens, Is.EqualTo(new[] { "w00:0x0101" }));
-                Assert.That(route462.SeasonalVariants[1].VariantTokens, Is.EqualTo(new[] { "w00:0x0100" }));
-                Assert.That(worldDatabase.TryGetSceneForLogicalMapIndex(462, out _), Is.False);
-                Assert.That(worldDatabase.TryGetCandidateScenesForLogicalMapIndex(462, out WorldSceneContract[] aliasCandidates), Is.True);
-                Assert.That(aliasCandidates, Has.Length.EqualTo(2));
-                Assert.That(aliasCandidates[0].SceneId, Is.EqualTo("zone-0081"));
-                Assert.That(aliasCandidates[1].SceneId, Is.EqualTo("zone-0082"));
-                Assert.That(worldDatabase.TryGetMapRoute(519, out WorldMapRouteContract route519), Is.True);
-                Assert.That(route519.SideLookup.EntryIndex, Is.EqualTo(519));
-                Assert.That(route519.SideLookup.RawWord0, Is.EqualTo(16000));
-                Assert.That(route519.SideLookup.RawWord1, Is.EqualTo(127));
-                Assert.That(route519.SeasonalVariants, Has.Length.EqualTo(4));
-                Assert.That(route519.SeasonalVariants[2].VariantTokens, Is.EqualTo(new[] { "w10:0x0200", "w13:0x0300", "w19:0x0300", "w22:0x0300", "w23:0x0003", "w25:0x0300" }));
-                Assert.That(route519.SeasonalVariants[3].VariantTokens, Is.EqualTo(new[] { "w10:0x0200", "w19:0x0300", "w25:0x0300" }));
-                Assert.That(worldDatabase.TryGetMapRoute(649, out WorldMapRouteContract route649), Is.True);
-                Assert.That(route649.SideLookup.EntryIndex, Is.EqualTo(649));
-                Assert.That(route649.SideLookup.RawWord0, Is.EqualTo(16000));
-                Assert.That(route649.SideLookup.RawWord1, Is.EqualTo(120));
-                Assert.That(route649.SeasonalVariants, Is.Empty);
-                Assert.That(worldDatabase.TryGetMapSideLookup(650, out WorldMapSideLookupContract sideLookup650), Is.True);
-                Assert.That(sideLookup650.RawWord0, Is.EqualTo(16000));
-                Assert.That(sideLookup650.RawWord1, Is.EqualTo(120));
-                Assert.That(worldDatabase.TryGetMapSideLookup(651, out WorldMapSideLookupContract sideLookup651), Is.True);
-                Assert.That(sideLookup651.RawWord0, Is.EqualTo(16000));
-                Assert.That(sideLookup651.RawWord1, Is.EqualTo(120));
+                Assert.That(worldDatabase.TryGetMapRoute(0, out WorldMapRouteContract routeZero), Is.True);
+                Assert.That(routeZero.ResolvedMapIndex, Is.EqualTo(0));
+                Assert.That(routeZero.CandidateSceneIds, Is.EqualTo(new[] { "zone-0000" }));
+                Assert.That(routeZero.CandidateZoneIndices, Is.EqualTo(new[] { 0 }));
+                Assert.That(routeZero.SideLookup.EntryIndex, Is.EqualTo(0));
+                Assert.That(routeZero.SideLookup.RawWord0, Is.EqualTo(16));
+                Assert.That(routeZero.SideLookup.RawWord1, Is.EqualTo(32));
+                Assert.That(routeZero.SeasonalVariants, Is.Empty);
+                Assert.That(worldDatabase.TryGetSceneForLogicalMapIndex(0, out WorldSceneContract uniqueScene), Is.True);
+                Assert.That(uniqueScene.SceneId, Is.EqualTo("zone-0000"));
+                Assert.That(worldDatabase.TryGetMapSideLookup(0, out WorldMapSideLookupContract sideLookupZero), Is.True);
+                Assert.That(sideLookupZero.RawWord0, Is.EqualTo(16));
+                Assert.That(sideLookupZero.RawWord1, Is.EqualTo(32));
                 Assert.That(worldDatabase.TryGetScene("zone-0000", out WorldSceneContract zoneZero), Is.True);
                 Assert.That(zoneZero.ZoneIndex, Is.EqualTo(0));
                 Assert.That(zoneZero.SourceId, Is.EqualTo("zone-headers:0"));
                 Assert.That(zoneZero.PrimaryScriptMemberIndex, Is.EqualTo(0));
-                Assert.That(zoneZero.SecondaryScriptMemberIndex, Is.EqualTo(1));
+                Assert.That(zoneZero.SecondaryScriptMemberIndex, Is.EqualTo(0));
                 Assert.That(zoneZero.EventTextArchiveId, Is.EqualTo("event-text"));
-                Assert.That(zoneZero.EventTextBankIndex, Is.EqualTo(2));
+                Assert.That(zoneZero.EventTextBankIndex, Is.EqualTo(0));
                 Assert.That(zoneZero.MapReference, Is.Not.Null);
                 Assert.That(zoneZero.MapReference.LogicalMapIndex, Is.EqualTo(0));
                 Assert.That(zoneZero.MapReference.ResolvedMapIndex, Is.EqualTo(0));
                 Assert.That(zoneZero.MapReference.IsIdentityMapping, Is.True);
-                Assert.That(zoneZero.PermissionGrid.GridId, Is.EqualTo("zone-0000:permission-grid:wb:s1:p1:t4"));
-                Assert.That(zoneZero.PermissionGrid.Width, Is.EqualTo(32));
-                Assert.That(zoneZero.PermissionGrid.Height, Is.EqualTo(32));
-                Assert.That(zoneZero.PermissionGrid.CellTokens, Has.Length.EqualTo(1024));
-                Assert.That(zoneZero.PermissionGrid.CellTokens[0], Is.EqualTo("0000000001008100"));
-                Assert.That(zoneZero.PermissionGrid.CellTokens[1023], Is.EqualTo("0000000001008100"));
+                Assert.That(zoneZero.PermissionGrid.GridId, Is.EqualTo("zone-0000:permission-grid:fixture:s0:p1:t0"));
+                Assert.That(zoneZero.PermissionGrid.Width, Is.EqualTo(2));
+                Assert.That(zoneZero.PermissionGrid.Height, Is.EqualTo(1));
+                Assert.That(zoneZero.PermissionGrid.CellTokens, Is.EqualTo(new[] { "walk", "block" }));
                 Assert.That(zoneZero.CameraProfile.ProfileId, Is.EqualTo("zone-0000:camera:unresolved"));
                 Assert.That(zoneZero.CameraProfile.CameraMode, Is.EqualTo("unresolved"));
                 Assert.That(zoneZero.SeasonalVariants, Is.Empty);
-                Assert.That(worldDatabase.TryGetSceneByZoneIndex(426, out WorldSceneContract zoneLast), Is.True);
-                Assert.That(zoneLast.SceneId, Is.EqualTo("zone-0426"));
-                Assert.That(zoneLast.PrimaryScriptMemberIndex, Is.EqualTo(852));
-                Assert.That(zoneLast.SecondaryScriptMemberIndex, Is.EqualTo(853));
-                Assert.That(zoneLast.EventTextBankIndex, Is.EqualTo(468));
-                Assert.That(zoneLast.MapReference.LogicalMapIndex, Is.EqualTo(426));
-                Assert.That(zoneLast.MapReference.ResolvedMapIndex, Is.EqualTo(425));
-                Assert.That(zoneLast.MapReference.IsIdentityMapping, Is.False);
-                Assert.That(zoneLast.PermissionGrid.GridId, Is.EqualTo("zone-0426:permission-grid:unresolved"));
-                Assert.That(zoneLast.PermissionGrid.CellTokens, Is.Empty);
-                Assert.That(artifacts.MapReferenceCount, Is.EqualTo(650));
-                Assert.That(artifacts.MapSideLookupCount, Is.EqualTo(652));
-                Assert.That(artifacts.FormatSummary(), Does.Contain("Imported 427 world scenes, 652 map side lookups, and 854 script bindings"));
+                Assert.That(worldDatabase.TryGetSceneByZoneIndex(0, out WorldSceneContract zoneZeroByIndex), Is.True);
+                Assert.That(zoneZeroByIndex.SceneId, Is.EqualTo("zone-0000"));
+                Assert.That(artifacts.MapReferenceCount, Is.EqualTo(1));
+                Assert.That(artifacts.MapSideLookupCount, Is.EqualTo(1));
+                Assert.That(artifacts.FormatSummary(), Does.Contain("Imported 1 world scenes, 1 map side lookups, and 2 script bindings"));
             }
             finally
             {
@@ -719,10 +685,9 @@ namespace PokeBlack2.Foundation.Editor
         [Test]
         public void WorldImportRunner_Rejects_Missing_MapLookup_Container()
         {
-            string canonicalRoot = Gen5ImportProfile.CanonicalExportRoot;
-            string romInfoJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.RomInfoRelativePath.Replace('/', Path.DirectorySeparatorChar)));
-            string sourceCatalogJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.SourceCatalogRelativePath.Replace('/', Path.DirectorySeparatorChar)));
-            string mapsIndexJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.GetGroupIndexRelativePath("maps").Replace('/', Path.DirectorySeparatorChar)));
+            string romInfoJson = LoadImportFixtureOutput(Gen5ImportProfile.RomInfoRelativePath);
+            string sourceCatalogJson = LoadImportFixtureOutput(Gen5ImportProfile.SourceCatalogRelativePath);
+            string mapsIndexJson = LoadImportFixtureOutput(Gen5ImportProfile.GetGroupIndexRelativePath("maps"));
             string root = CreateTemporaryImportSessionRoot(
                 romInfoJson: romInfoJson,
                 sourceCatalogJson: sourceCatalogJson,
@@ -732,7 +697,10 @@ namespace PokeBlack2.Foundation.Editor
                         Gen5ImportProfile.GetGroupIndexRelativePath("maps"),
                         mapsIndexJson.Replace("\"id\": \"map-lookup\"", "\"id\": \"broken-map-lookup\"")
                     },
-                });
+                },
+                manifestRomFilename: ImportFixtureRomFilename,
+                manifestRomSha1: ImportFixtureRomSha1,
+                manifestRomSize: ImportFixtureRomSize);
             string generatedAssetsRoot = CreateTemporaryGeneratedAssetsRoot();
 
             try
@@ -748,10 +716,9 @@ namespace PokeBlack2.Foundation.Editor
         [Test]
         public void WorldImportRunner_Rejects_Missing_MapSideLookup_Container()
         {
-            string canonicalRoot = Gen5ImportProfile.CanonicalExportRoot;
-            string romInfoJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.RomInfoRelativePath.Replace('/', Path.DirectorySeparatorChar)));
-            string sourceCatalogJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.SourceCatalogRelativePath.Replace('/', Path.DirectorySeparatorChar)));
-            string mapsIndexJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.GetGroupIndexRelativePath("maps").Replace('/', Path.DirectorySeparatorChar)));
+            string romInfoJson = LoadImportFixtureOutput(Gen5ImportProfile.RomInfoRelativePath);
+            string sourceCatalogJson = LoadImportFixtureOutput(Gen5ImportProfile.SourceCatalogRelativePath);
+            string mapsIndexJson = LoadImportFixtureOutput(Gen5ImportProfile.GetGroupIndexRelativePath("maps"));
             string root = CreateTemporaryImportSessionRoot(
                 romInfoJson: romInfoJson,
                 sourceCatalogJson: sourceCatalogJson,
@@ -761,7 +728,10 @@ namespace PokeBlack2.Foundation.Editor
                         Gen5ImportProfile.GetGroupIndexRelativePath("maps"),
                         mapsIndexJson.Replace("\"id\": \"map-side-lookup-candidate\"", "\"id\": \"broken-map-side-lookup\"")
                     },
-                });
+                },
+                manifestRomFilename: ImportFixtureRomFilename,
+                manifestRomSha1: ImportFixtureRomSha1,
+                manifestRomSize: ImportFixtureRomSize);
             string generatedAssetsRoot = CreateTemporaryGeneratedAssetsRoot();
 
             try
@@ -795,7 +765,7 @@ namespace PokeBlack2.Foundation.Editor
         [Test]
         public void TextDatabase_Resolves_Script_Text_Reference_And_Formats_Pages()
         {
-            string root = CreateCanonicalTextImportSessionRoot();
+            string root = CreateFixtureTextImportSessionRoot();
             string generatedAssetsRoot = CreateTemporaryGeneratedAssetsRoot();
 
             try
@@ -805,8 +775,8 @@ namespace PokeBlack2.Foundation.Editor
                 ScriptTextReferenceContract reference = new ScriptTextReferenceContract
                 {
                     ArchiveId = "system-text",
-                    BankIndex = 3,
-                    MessageIndex = 56,
+                    BankIndex = 0,
+                    MessageIndex = 1,
                 };
 
                 Assert.That(textDatabase, Is.Not.Null);
@@ -817,11 +787,11 @@ namespace PokeBlack2.Foundation.Editor
                 string[] pages = Gen5TextFormatter.SplitIntoPages(message, resolver);
 
                 Assert.That(pages, Has.Length.EqualTo(2));
-                Assert.That(pages[0], Is.EqualTo("Juniper's words echoed...\nPLAYER! There's a time and"));
-                Assert.That(pages[1], Is.EqualTo("\nplace for everything! But not now."));
+                Assert.That(pages[0], Is.EqualTo("Name:\nPLAYER"));
+                Assert.That(pages[1], Is.EqualTo("Next page."));
                 Assert.That(
                     Gen5TextFormatter.FormatForDisplay(message, resolver),
-                    Is.EqualTo("Juniper's words echoed...\nPLAYER! There's a time and\f\nplace for everything! But not now."));
+                    Is.EqualTo("Name:\nPLAYER\fNext page."));
             }
             finally
             {
@@ -832,7 +802,7 @@ namespace PokeBlack2.Foundation.Editor
         [Test]
         public void TextDatabase_Rejects_Invalid_Script_Text_Reference()
         {
-            string root = CreateCanonicalTextImportSessionRoot();
+            string root = CreateFixtureTextImportSessionRoot();
             string generatedAssetsRoot = CreateTemporaryGeneratedAssetsRoot();
 
             try
@@ -847,7 +817,7 @@ namespace PokeBlack2.Foundation.Editor
                         {
                             ArchiveId = "system-text",
                             BankIndex = -1,
-                            MessageIndex = 56,
+                            MessageIndex = 1,
                         },
                         out _),
                     Is.False);
@@ -884,56 +854,45 @@ namespace PokeBlack2.Foundation.Editor
             return $"Assets/Generated/TestImports/{Guid.NewGuid():N}";
         }
 
-        private static string CreateCanonicalTextImportSessionRoot()
+        private static string CreateFixtureTextImportSessionRoot()
         {
-            string canonicalRoot = Gen5ImportProfile.CanonicalExportRoot;
-            string romInfoJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.RomInfoRelativePath.Replace('/', Path.DirectorySeparatorChar)));
-            string sourceCatalogJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.SourceCatalogRelativePath.Replace('/', Path.DirectorySeparatorChar)));
-            string textIndexJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.GetGroupIndexRelativePath("text").Replace('/', Path.DirectorySeparatorChar)));
-
-            return CreateTemporaryImportSessionRoot(
-                romInfoJson: romInfoJson,
-                sourceCatalogJson: sourceCatalogJson,
-                groupOutputs: new Dictionary<string, string>
-                {
-                    { Gen5ImportProfile.GetGroupIndexRelativePath("text"), textIndexJson },
-                });
+            return CreateFixtureImportSessionRoot("text");
         }
 
-        private static string CreateCanonicalScriptImportSessionRoot()
+        private static string CreateFixtureScriptImportSessionRoot()
         {
-            string canonicalRoot = Gen5ImportProfile.CanonicalExportRoot;
-            string romInfoJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.RomInfoRelativePath.Replace('/', Path.DirectorySeparatorChar)));
-            string sourceCatalogJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.SourceCatalogRelativePath.Replace('/', Path.DirectorySeparatorChar)));
-            string mapsIndexJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.GetGroupIndexRelativePath("maps").Replace('/', Path.DirectorySeparatorChar)));
-            string textIndexJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.GetGroupIndexRelativePath("text").Replace('/', Path.DirectorySeparatorChar)));
-            string scriptsIndexJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.GetGroupIndexRelativePath("scripts").Replace('/', Path.DirectorySeparatorChar)));
-
-            return CreateTemporaryImportSessionRoot(
-                romInfoJson: romInfoJson,
-                sourceCatalogJson: sourceCatalogJson,
-                groupOutputs: new Dictionary<string, string>
-                {
-                    { Gen5ImportProfile.GetGroupIndexRelativePath("maps"), mapsIndexJson },
-                    { Gen5ImportProfile.GetGroupIndexRelativePath("text"), textIndexJson },
-                    { Gen5ImportProfile.GetGroupIndexRelativePath("scripts"), scriptsIndexJson },
-                });
+            return CreateFixtureImportSessionRoot("maps", "scripts", "text");
         }
 
-        private static string CreateCanonicalWorldImportSessionRoot()
+        private static string CreateFixtureWorldImportSessionRoot()
         {
-            string canonicalRoot = Gen5ImportProfile.CanonicalExportRoot;
-            string romInfoJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.RomInfoRelativePath.Replace('/', Path.DirectorySeparatorChar)));
-            string sourceCatalogJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.SourceCatalogRelativePath.Replace('/', Path.DirectorySeparatorChar)));
-            string mapsIndexJson = File.ReadAllText(Path.Combine(canonicalRoot, Gen5ImportProfile.GetGroupIndexRelativePath("maps").Replace('/', Path.DirectorySeparatorChar)));
+            return CreateFixtureImportSessionRoot("maps");
+        }
+
+        private static string CreateFixtureImportSessionRoot(params string[] groupNames)
+        {
+            Dictionary<string, string> groupOutputs = new Dictionary<string, string>(StringComparer.Ordinal);
+            foreach (string groupName in groupNames ?? Array.Empty<string>())
+            {
+                groupOutputs[Gen5ImportProfile.GetGroupIndexRelativePath(groupName)] =
+                    LoadImportFixtureOutput(Gen5ImportProfile.GetGroupIndexRelativePath(groupName));
+            }
 
             return CreateTemporaryImportSessionRoot(
-                romInfoJson: romInfoJson,
-                sourceCatalogJson: sourceCatalogJson,
-                groupOutputs: new Dictionary<string, string>
-                {
-                    { Gen5ImportProfile.GetGroupIndexRelativePath("maps"), mapsIndexJson },
-                });
+                romInfoJson: LoadImportFixtureOutput(Gen5ImportProfile.RomInfoRelativePath),
+                sourceCatalogJson: LoadImportFixtureOutput(Gen5ImportProfile.SourceCatalogRelativePath),
+                groupOutputs: groupOutputs,
+                manifestRomFilename: ImportFixtureRomFilename,
+                manifestRomSha1: ImportFixtureRomSha1,
+                manifestRomSize: ImportFixtureRomSize);
+        }
+
+        private static string LoadImportFixtureOutput(string relativePathWithinRoot)
+        {
+            string fixturePath = Path.Combine(
+                ImportFixtureRoot,
+                relativePathWithinRoot.Replace('/', Path.DirectorySeparatorChar));
+            return File.ReadAllText(fixturePath);
         }
 
         private static void DeleteAssetTree(string assetPath)
@@ -968,6 +927,9 @@ namespace PokeBlack2.Foundation.Editor
             GameContentProfile profile,
             string contentManifestAssetPath,
             string expectedContentVersion,
+            string expectedRomFilename,
+            string expectedRomSha1,
+            long expectedRomSize,
             string[] expectedPresentGroups,
             string[] expectedAbsentGroups)
         {
@@ -987,9 +949,9 @@ namespace PokeBlack2.Foundation.Editor
             Assert.That(contentManifest.GameId, Is.EqualTo(Gen5ImportProfile.GameId));
             Assert.That(contentManifest.ContractFamily, Is.EqualTo(profile.ContractFamily));
             Assert.That(contentManifest.ProfileId, Is.EqualTo(profile.ProfileId));
-            Assert.That(contentManifest.RomFilename, Is.EqualTo("pokeblack.nds"));
-            Assert.That(contentManifest.RomSha1, Is.EqualTo("a68b3bedf5c1e53556e41e59cdf396c20b331896"));
-            Assert.That(contentManifest.RomSize, Is.EqualTo(268435456));
+            Assert.That(contentManifest.RomFilename, Is.EqualTo(expectedRomFilename));
+            Assert.That(contentManifest.RomSha1, Is.EqualTo(expectedRomSha1));
+            Assert.That(contentManifest.RomSize, Is.EqualTo(expectedRomSize));
             Assert.That(contentManifest.SourceGeneratedAt, Is.Not.Empty);
 
             foreach (string groupName in expectedPresentGroups ?? Array.Empty<string>())
@@ -1054,7 +1016,10 @@ namespace PokeBlack2.Foundation.Editor
         private static string CreateTemporaryImportSessionRoot(
             string romInfoJson,
             string sourceCatalogJson,
-            Dictionary<string, string> groupOutputs = null)
+            Dictionary<string, string> groupOutputs = null,
+            string manifestRomFilename = "pokeblack.nds",
+            string manifestRomSha1 = "a68b3bedf5c1e53556e41e59cdf396c20b331896",
+            long manifestRomSize = 268435456)
         {
             string root = CreateTemporaryExportRoot();
             Dictionary<string, string> outputs = new Dictionary<string, string>(StringComparer.Ordinal)
@@ -1083,7 +1048,12 @@ namespace PokeBlack2.Foundation.Editor
 
             File.WriteAllText(
                 Path.Combine(root, "manifests", "manifest.json"),
-                CreateManifestJsonForOutputs(root.Replace('\\', '/'), manifestOutputPaths));
+                CreateManifestJsonForOutputs(
+                    root.Replace('\\', '/'),
+                    manifestOutputPaths,
+                    manifestRomFilename,
+                    manifestRomSha1,
+                    manifestRomSize));
 
             return root;
         }
@@ -1227,18 +1197,29 @@ namespace PokeBlack2.Foundation.Editor
                 "}";
         }
 
-        private static string CreateManifestJson(string exportRoot, string outputPath, string outputHash)
+        private static string CreateManifestJson(
+            string exportRoot,
+            string outputPath,
+            string outputHash,
+            string romFilename = "pokeblack.nds",
+            string romSha1 = "a68b3bedf5c1e53556e41e59cdf396c20b331896",
+            long romSize = 268435456)
         {
             return
                 "{" +
-                $"\"schemaVersion\":1,\"game\":\"pokemon-black\",\"rom\":{{\"filename\":\"pokeblack.nds\",\"sha1\":\"a68b3bedf5c1e53556e41e59cdf396c20b331896\",\"size\":268435456}}," +
+                $"\"schemaVersion\":1,\"game\":\"pokemon-black\",\"rom\":{{\"filename\":\"{EscapeJson(romFilename)}\",\"sha1\":\"{EscapeJson(romSha1)}\",\"size\":{romSize}}}," +
                 $"\"exportRoot\":\"{exportRoot}\",\"generatedAt\":\"2026-04-18T00:00:00Z\"," +
                 $"\"normalizedOutputs\":[{{\"path\":\"{outputPath}\",\"hash\":\"{outputHash}\"}}]," +
                 $"\"hashes\":{{\"{outputPath}\":\"{outputHash}\"}}" +
                 "}";
         }
 
-        private static string CreateManifestJsonForOutputs(string exportRoot, IReadOnlyList<string> outputPaths)
+        private static string CreateManifestJsonForOutputs(
+            string exportRoot,
+            IReadOnlyList<string> outputPaths,
+            string romFilename = "pokeblack.nds",
+            string romSha1 = "a68b3bedf5c1e53556e41e59cdf396c20b331896",
+            long romSize = 268435456)
         {
             StringBuilder normalizedOutputs = new StringBuilder();
             StringBuilder hashes = new StringBuilder();
@@ -1268,7 +1249,7 @@ namespace PokeBlack2.Foundation.Editor
 
             return
                 "{" +
-                $"\"schemaVersion\":1,\"game\":\"pokemon-black\",\"rom\":{{\"filename\":\"pokeblack.nds\",\"sha1\":\"a68b3bedf5c1e53556e41e59cdf396c20b331896\",\"size\":268435456}}," +
+                $"\"schemaVersion\":1,\"game\":\"pokemon-black\",\"rom\":{{\"filename\":\"{EscapeJson(romFilename)}\",\"sha1\":\"{EscapeJson(romSha1)}\",\"size\":{romSize}}}," +
                 $"\"exportRoot\":\"{EscapeJson(exportRoot)}\",\"generatedAt\":\"2026-04-18T00:00:00Z\"," +
                 $"\"normalizedOutputs\":[{normalizedOutputs}],\"hashes\":{{{hashes}}}" +
                 "}";

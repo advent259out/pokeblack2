@@ -1,0 +1,45 @@
+{
+  "exportRoot": "Assets/Editor/Gen5/TestData/SyntheticImportFixture",
+  "game": "pokemon-black",
+  "generatedAt": "2026-04-19T00:00:00Z",
+  "hashes": {
+    "Assets/Editor/Gen5/TestData/SyntheticImportFixture/normalized/metadata/contract-placeholder.json": "c431423a43dcee1610afb7bfac7eb63df0568ba7",
+    "Assets/Editor/Gen5/TestData/SyntheticImportFixture/normalized/metadata/rom-info.json": "222c6ea53fc9cf35c2ed559bdaf3da7518f2dc8b",
+    "Assets/Editor/Gen5/TestData/SyntheticImportFixture/normalized/metadata/source-catalog.json": "5b537c40ee92f4a3c62554884255f01797dd0fe3",
+    "Assets/Editor/Gen5/TestData/SyntheticImportFixture/normalized/text/index.json": "41a39d5ee36d740ead9141a2b45b3f02c2bd71f4",
+    "Assets/Editor/Gen5/TestData/SyntheticImportFixture/normalized/scripts/index.json": "141aa4a57f28fa00122e11d09d260e6ca5c3b7d7",
+    "Assets/Editor/Gen5/TestData/SyntheticImportFixture/normalized/maps/index.json": "187020176bf80f6a607ee797e82ec672e480f7fc"
+  },
+  "normalizedOutputs": [
+    {
+      "hash": "c431423a43dcee1610afb7bfac7eb63df0568ba7",
+      "path": "Assets/Editor/Gen5/TestData/SyntheticImportFixture/normalized/metadata/contract-placeholder.json"
+    },
+    {
+      "hash": "222c6ea53fc9cf35c2ed559bdaf3da7518f2dc8b",
+      "path": "Assets/Editor/Gen5/TestData/SyntheticImportFixture/normalized/metadata/rom-info.json"
+    },
+    {
+      "hash": "5b537c40ee92f4a3c62554884255f01797dd0fe3",
+      "path": "Assets/Editor/Gen5/TestData/SyntheticImportFixture/normalized/metadata/source-catalog.json"
+    },
+    {
+      "hash": "41a39d5ee36d740ead9141a2b45b3f02c2bd71f4",
+      "path": "Assets/Editor/Gen5/TestData/SyntheticImportFixture/normalized/text/index.json"
+    },
+    {
+      "hash": "141aa4a57f28fa00122e11d09d260e6ca5c3b7d7",
+      "path": "Assets/Editor/Gen5/TestData/SyntheticImportFixture/normalized/scripts/index.json"
+    },
+    {
+      "hash": "187020176bf80f6a607ee797e82ec672e480f7fc",
+      "path": "Assets/Editor/Gen5/TestData/SyntheticImportFixture/normalized/maps/index.json"
+    }
+  ],
+  "rom": {
+    "filename": "fixture.nds",
+    "sha1": "0000000000000000000000000000000000000001",
+    "size": 1024
+  },
+  "schemaVersion": 1
+}

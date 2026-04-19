@@ -1,0 +1,283 @@
+{
+  "containerCount": 5,
+  "containers": [
+    {
+      "containerType": "narc",
+      "fileId": 30,
+      "id": "map-containers",
+      "largestMemberSize": 1,
+      "memberCount": 1,
+      "members": [
+        {
+          "index": 0,
+          "sha1": "dddddddddddddddddddddddddddddddddddddddd",
+          "size": 1
+        }
+      ],
+      "rawOutputPath": "Assets/Editor/Gen5/TestData/SyntheticImportFixture/raw/narc/fixture/maps/containers",
+      "scriptTextBindingCount": 0,
+      "scriptTextBindings": [],
+      "lookupCount": 0,
+      "canonicalMapCount": 0,
+      "identityMappingCount": 0,
+      "aliasMappingCount": 0,
+      "maxResolvedMapIndex": -1,
+      "mapLookupEntries": [],
+      "mapContainerLayoutCount": 1,
+      "permissionGridCandidateMapCount": 1,
+      "permissionGridCandidateCount": 1,
+      "mapContainerLayouts": [
+        {
+          "mapContainerIndex": 0,
+          "containerTag": "fixture",
+          "sectionCount": 1,
+          "modelSectionCount": 0,
+          "permissionGridCandidateCount": 1,
+          "sections": [
+            {
+              "sectionIndex": 0,
+              "offset": 0,
+              "size": 16,
+              "startsWithModelMagic": false,
+              "isPermissionGridCandidate": true
+            }
+          ],
+          "permissionGridCandidates": [
+            {
+              "sectionIndex": 0,
+              "width": 2,
+              "height": 1,
+              "primaryCellCount": 2,
+              "recordStrideBytes": 8,
+              "recordCount": 2,
+              "planeCount": 1,
+              "trailingRecordCount": 0,
+              "recordTokenCount": 2,
+              "recordTokens": [
+                "walk",
+                "block"
+              ]
+            }
+          ]
+        }
+      ],
+      "candidateCount": 0,
+      "seasonSlotCount": 0,
+      "seasonWordCount": 0,
+      "mapMetadataCandidates": [],
+      "sideLookupEntryCount": 0,
+      "distinctSideLookupPairCount": 0,
+      "mapSideLookupEntries": [],
+      "sha1": "4444444444444444444444444444444444444444",
+      "size": 1,
+      "sourcePath": "fixture/maps/containers",
+      "totalMemberBytes": 1,
+      "zoneCount": 0,
+      "zones": []
+    },
+    {
+      "containerType": "bin",
+      "fileId": 31,
+      "id": "zone-headers",
+      "largestMemberSize": 1,
+      "memberCount": 1,
+      "members": [
+        {
+          "index": 0,
+          "sha1": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "size": 1
+        }
+      ],
+      "rawOutputPath": "Assets/Editor/Gen5/TestData/SyntheticImportFixture/raw/narc/fixture/maps/zones",
+      "scriptTextBindingCount": 2,
+      "scriptTextBindings": [
+        {
+          "scriptMemberIndex": 0,
+          "textArchiveId": "event-text",
+          "textBankIndex": 0,
+          "zoneIndex": 0
+        },
+        {
+          "scriptMemberIndex": 0,
+          "textArchiveId": "event-text",
+          "textBankIndex": 0,
+          "zoneIndex": 0
+        }
+      ],
+      "lookupCount": 0,
+      "canonicalMapCount": 0,
+      "identityMappingCount": 0,
+      "aliasMappingCount": 0,
+      "maxResolvedMapIndex": -1,
+      "mapLookupEntries": [],
+      "mapContainerLayoutCount": 0,
+      "permissionGridCandidateMapCount": 0,
+      "permissionGridCandidateCount": 0,
+      "mapContainerLayouts": [],
+      "candidateCount": 0,
+      "seasonSlotCount": 0,
+      "seasonWordCount": 0,
+      "mapMetadataCandidates": [],
+      "sideLookupEntryCount": 0,
+      "distinctSideLookupPairCount": 0,
+      "mapSideLookupEntries": [],
+      "sha1": "5555555555555555555555555555555555555555",
+      "size": 1,
+      "sourcePath": "fixture/maps/zones",
+      "totalMemberBytes": 1,
+      "zoneCount": 1,
+      "zones": [
+        {
+          "eventTextArchiveId": "event-text",
+          "eventTextBankIndex": 0,
+          "primaryScriptMemberIndex": 0,
+          "scriptTextBindingCount": 2,
+          "scriptTextBindings": [
+            {
+              "scriptMemberIndex": 0,
+              "textArchiveId": "event-text",
+              "textBankIndex": 0,
+              "zoneIndex": 0
+            },
+            {
+              "scriptMemberIndex": 0,
+              "textArchiveId": "event-text",
+              "textBankIndex": 0,
+              "zoneIndex": 0
+            }
+          ],
+          "secondaryScriptMemberIndex": 0,
+          "zoneIndex": 0
+        }
+      ]
+    },
+    {
+      "containerType": "bin",
+      "fileId": 32,
+      "id": "map-lookup",
+      "largestMemberSize": 1,
+      "memberCount": 1,
+      "members": [
+        {
+          "index": 0,
+          "sha1": "ffffffffffffffffffffffffffffffffffffffff",
+          "size": 1
+        }
+      ],
+      "rawOutputPath": "Assets/Editor/Gen5/TestData/SyntheticImportFixture/raw/narc/fixture/maps/lookup",
+      "scriptTextBindingCount": 0,
+      "scriptTextBindings": [],
+      "lookupCount": 1,
+      "canonicalMapCount": 1,
+      "identityMappingCount": 1,
+      "aliasMappingCount": 0,
+      "maxResolvedMapIndex": 0,
+      "mapLookupEntries": [
+        {
+          "logicalMapIndex": 0,
+          "resolvedMapIndex": 0,
+          "isIdentityMapping": true
+        }
+      ],
+      "mapContainerLayoutCount": 0,
+      "permissionGridCandidateMapCount": 0,
+      "permissionGridCandidateCount": 0,
+      "mapContainerLayouts": [],
+      "candidateCount": 0,
+      "seasonSlotCount": 0,
+      "seasonWordCount": 0,
+      "mapMetadataCandidates": [],
+      "sideLookupEntryCount": 0,
+      "distinctSideLookupPairCount": 0,
+      "mapSideLookupEntries": [],
+      "sha1": "6666666666666666666666666666666666666666",
+      "size": 1,
+      "sourcePath": "fixture/maps/lookup",
+      "totalMemberBytes": 1,
+      "zoneCount": 0,
+      "zones": []
+    },
+    {
+      "containerType": "bin",
+      "fileId": 33,
+      "id": "map-metadata-candidate",
+      "largestMemberSize": 0,
+      "memberCount": 0,
+      "members": [],
+      "rawOutputPath": "Assets/Editor/Gen5/TestData/SyntheticImportFixture/raw/narc/fixture/maps/metadata",
+      "scriptTextBindingCount": 0,
+      "scriptTextBindings": [],
+      "lookupCount": 0,
+      "canonicalMapCount": 0,
+      "identityMappingCount": 0,
+      "aliasMappingCount": 0,
+      "maxResolvedMapIndex": -1,
+      "mapLookupEntries": [],
+      "mapContainerLayoutCount": 0,
+      "permissionGridCandidateMapCount": 0,
+      "permissionGridCandidateCount": 0,
+      "mapContainerLayouts": [],
+      "candidateCount": 0,
+      "seasonSlotCount": 0,
+      "seasonWordCount": 0,
+      "mapMetadataCandidates": [],
+      "sideLookupEntryCount": 0,
+      "distinctSideLookupPairCount": 0,
+      "mapSideLookupEntries": [],
+      "sha1": "7777777777777777777777777777777777777777",
+      "size": 0,
+      "sourcePath": "fixture/maps/metadata",
+      "totalMemberBytes": 0,
+      "zoneCount": 0,
+      "zones": []
+    },
+    {
+      "containerType": "bin",
+      "fileId": 34,
+      "id": "map-side-lookup-candidate",
+      "largestMemberSize": 1,
+      "memberCount": 1,
+      "members": [
+        {
+          "index": 0,
+          "sha1": "9999999999999999999999999999999999999999",
+          "size": 1
+        }
+      ],
+      "rawOutputPath": "Assets/Editor/Gen5/TestData/SyntheticImportFixture/raw/narc/fixture/maps/side-lookup",
+      "scriptTextBindingCount": 0,
+      "scriptTextBindings": [],
+      "lookupCount": 0,
+      "canonicalMapCount": 0,
+      "identityMappingCount": 0,
+      "aliasMappingCount": 0,
+      "maxResolvedMapIndex": -1,
+      "mapLookupEntries": [],
+      "mapContainerLayoutCount": 0,
+      "permissionGridCandidateMapCount": 0,
+      "permissionGridCandidateCount": 0,
+      "mapContainerLayouts": [],
+      "candidateCount": 0,
+      "seasonSlotCount": 0,
+      "seasonWordCount": 0,
+      "mapMetadataCandidates": [],
+      "sideLookupEntryCount": 1,
+      "distinctSideLookupPairCount": 1,
+      "mapSideLookupEntries": [
+        {
+          "entryIndex": 0,
+          "word0": 16,
+          "word1": 32
+        }
+      ],
+      "sha1": "8888888888888888888888888888888888888888",
+      "size": 1,
+      "sourcePath": "fixture/maps/side-lookup",
+      "totalMemberBytes": 1,
+      "zoneCount": 0,
+      "zones": []
+    }
+  ],
+  "group": "maps",
+  "totalScriptTextBindings": 2
+}

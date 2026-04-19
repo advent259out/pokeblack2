@@ -1,0 +1,116 @@
+{
+  "containerCount": 2,
+  "containers": [
+    {
+      "containerType": "narc",
+      "decodedMessageCount": 2,
+      "fileId": 10,
+      "id": "system-text",
+      "largestMemberSize": 1,
+      "memberCount": 1,
+      "members": [
+        {
+          "blockCount": 1,
+          "index": 0,
+          "messageCount": 2,
+          "messages": [
+            {
+              "blockIndex": 0,
+              "charCount": 14,
+              "entryIndex": 0,
+              "flags": 0,
+              "isCompressed": false,
+              "text": "Fixture hello.",
+              "tokens": [
+                {
+                  "kind": "text",
+                  "text": "Fixture hello."
+                }
+              ]
+            },
+            {
+              "blockIndex": 0,
+              "charCount": 29,
+              "entryIndex": 1,
+              "flags": 0,
+              "isCompressed": false,
+              "text": "Name:\\nVAR(256, 0)\\fNext page.",
+              "tokens": [
+                {
+                  "kind": "text",
+                  "text": "Name:"
+                },
+                {
+                  "kind": "lineBreak"
+                },
+                {
+                  "arguments": [
+                    0
+                  ],
+                  "controlCode": 256,
+                  "kind": "variable"
+                },
+                {
+                  "kind": "pageBreak"
+                },
+                {
+                  "kind": "text",
+                  "text": "Next page."
+                }
+              ]
+            }
+          ],
+          "messagesPerBlock": 2,
+          "sha1": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "size": 1
+        }
+      ],
+      "rawOutputPath": "Assets/Editor/Gen5/TestData/SyntheticImportFixture/raw/narc/fixture/text/system",
+      "sha1": "1111111111111111111111111111111111111111",
+      "size": 1,
+      "sourcePath": "fixture/text/system",
+      "totalMemberBytes": 1
+    },
+    {
+      "containerType": "narc",
+      "decodedMessageCount": 1,
+      "fileId": 11,
+      "id": "event-text",
+      "largestMemberSize": 1,
+      "memberCount": 1,
+      "members": [
+        {
+          "blockCount": 1,
+          "index": 0,
+          "messageCount": 1,
+          "messages": [
+            {
+              "blockIndex": 0,
+              "charCount": 20,
+              "entryIndex": 0,
+              "flags": 0,
+              "isCompressed": false,
+              "text": "Synthetic NPC hello.",
+              "tokens": [
+                {
+                  "kind": "text",
+                  "text": "Synthetic NPC hello."
+                }
+              ]
+            }
+          ],
+          "messagesPerBlock": 1,
+          "sha1": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "size": 1
+        }
+      ],
+      "rawOutputPath": "Assets/Editor/Gen5/TestData/SyntheticImportFixture/raw/narc/fixture/text/event",
+      "sha1": "2222222222222222222222222222222222222222",
+      "size": 1,
+      "sourcePath": "fixture/text/event",
+      "totalMemberBytes": 1
+    }
+  ],
+  "group": "text",
+  "totalDecodedMessages": 3
+}

@@ -1,0 +1,104 @@
+{
+  "containerCount": 1,
+  "containers": [
+    {
+      "containerType": "narc",
+      "decodedDialogueLineCount": 1,
+      "decodedProcedureCount": 1,
+      "fileId": 20,
+      "id": "script-containers",
+      "largestMemberSize": 1,
+      "memberCount": 1,
+      "members": [
+        {
+          "dialogueLineCount": 1,
+          "dialogueLines": [
+            {
+              "command": "message",
+              "instructionOffset": 0,
+              "lineId": "npc-line-0",
+              "messageId": 0,
+              "messageType": 0,
+              "procedureId": "proc-0",
+              "speakerObjectId": 1,
+              "variantA": 0,
+              "variantB": 0,
+              "viewType": 0
+            }
+          ],
+          "headerEntries": [
+            {
+              "headerIndex": 0,
+              "headerOffset": 0,
+              "startOffset": 0,
+              "storedOffset": 0
+            }
+          ],
+          "headerEntryCount": 1,
+          "headerMarkerOffset": 0,
+          "index": 0,
+          "parseWarningCount": 0,
+          "parseWarnings": [],
+          "parsedProcedureCount": 1,
+          "procedureCount": 1,
+          "procedures": [
+            {
+              "dialogueLineCount": 1,
+              "dialogueLines": [
+                {
+                  "command": "message",
+                  "instructionOffset": 0,
+                  "lineId": "npc-line-0",
+                  "messageId": 0,
+                  "messageType": 0,
+                  "procedureId": "proc-0",
+                  "speakerObjectId": 1,
+                  "variantA": 0,
+                  "variantB": 0,
+                  "viewType": 0
+                }
+              ],
+              "endOffset": 2,
+              "entryKind": "script",
+              "headerIndex": 0,
+              "instructionCount": 2,
+              "instructions": [
+                {
+                  "byteLength": 1,
+                  "mnemonic": "Message",
+                  "offset": 0,
+                  "opcode": 1,
+                  "operands": [
+                    0
+                  ]
+                },
+                {
+                  "byteLength": 1,
+                  "mnemonic": "End",
+                  "offset": 1,
+                  "opcode": 2,
+                  "operands": []
+                }
+              ],
+              "parseStatus": "complete",
+              "procedureId": "proc-0",
+              "startOffset": 0
+            }
+          ],
+          "sha1": "cccccccccccccccccccccccccccccccccccccccc",
+          "size": 1
+        }
+      ],
+      "parsedProcedureCount": 1,
+      "rawOutputPath": "Assets/Editor/Gen5/TestData/SyntheticImportFixture/raw/narc/fixture/scripts/main",
+      "sha1": "3333333333333333333333333333333333333333",
+      "size": 1,
+      "sourcePath": "fixture/scripts/main",
+      "totalMemberBytes": 1
+    }
+  ],
+  "group": "scripts",
+  "totalDecodedDialogueLines": 1,
+  "totalDecodedProcedures": 1,
+  "totalParsedProcedures": 1
+}
