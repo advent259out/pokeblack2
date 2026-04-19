@@ -1,0 +1,19 @@
+{
+  "name": "PokeBlack.Bootstrap.Tests.PlayMode",
+  "rootNamespace": "PokeBlack.Bootstrap.Tests.PlayMode",
+  "references": [
+    "PokeBlack.Bootstrap"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

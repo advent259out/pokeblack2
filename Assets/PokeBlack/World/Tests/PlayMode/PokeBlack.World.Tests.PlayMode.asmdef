@@ -1,0 +1,19 @@
+{
+  "name": "PokeBlack.World.Tests.PlayMode",
+  "rootNamespace": "PokeBlack.World.Tests.PlayMode",
+  "references": [
+    "PokeBlack.World.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

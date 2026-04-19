@@ -1,0 +1,17 @@
+{
+  "name": "PokeBlack.Infrastructure",
+  "rootNamespace": "PokeBlack.Infrastructure",
+  "references": [
+    "PokeBlack.Core",
+    "PokeBlack.Content.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

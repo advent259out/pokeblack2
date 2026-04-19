@@ -1,0 +1,21 @@
+{
+  "name": "PokeBlack.Bootstrap",
+  "rootNamespace": "PokeBlack.Bootstrap",
+  "references": [
+    "PokeBlack.Core",
+    "PokeBlack.Content.Runtime",
+    "PokeBlack.Infrastructure",
+    "PokeBlack.World.Runtime",
+    "PokeBlack.Battle.Runtime",
+    "PokeBlack.UI.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
