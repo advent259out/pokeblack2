@@ -1,6 +1,6 @@
 # Next Instructions for the AI Agent
 
-Use this after merging the docs-only architecture PR.
+Use this after merging `ADR-0001-canonical-product-identity.md`.
 
 ## Mission
 
@@ -16,26 +16,11 @@ Do not widen scope. Do not import more content just because the pipeline allows 
 4. Prefer small PRs, one bounded context each.
 5. Runtime must not read ROMs or raw exports.
 6. Generated assets are not edited by hand.
-7. Pure gameplay logic belongs in `PokeBlack2.Core`.
+7. Pure gameplay logic belongs in `PokeBlack.Core`.
 
 ## Execute in this order
 
-### PR 1 - Canonical identity ADR
-
-Create:
-
-- `docs/architecture/adr/ADR-0001-canonical-product-identity.md`
-
-Decide and document:
-
-- canonical product name;
-- canonical namespace/assembly prefix;
-- repo-name vs product-name relationship;
-- migration rule if a rename is required.
-
-Do not rename code yet unless the ADR is explicitly approved.
-
-### PR 2 - asmdef skeleton only
+### PR 1 - asmdef skeleton only
 
 Add the asmdef files and empty folders from `docs/architecture/asmdef-tree.md`.
 
@@ -47,7 +32,7 @@ Output required in the PR description:
 - allowed references;
 - any compile blockers discovered.
 
-### PR 3 - content manifest and versioning
+### PR 2 - content manifest and versioning
 
 Add:
 
@@ -60,7 +45,7 @@ Goal:
 
 - one place to answer: what content version is this build using?
 
-### PR 4 - fixture import smoke
+### PR 3 - fixture import smoke
 
 Add a tiny fixture dataset that is legal to store in-repo and can drive:
 
@@ -72,7 +57,7 @@ Goal:
 
 - CI must not require a ROM.
 
-### PR 5 - CI shell
+### PR 4 - CI shell
 
 Add GitHub Actions workflows for:
 
@@ -82,7 +67,7 @@ Add GitHub Actions workflows for:
 
 Keep job names unique.
 
-### PR 6 onward - first vertical slice only
+### PR 5 onward - first vertical slice only
 
 From this point forward, keep one bounded context per PR and stay inside the first vertical slice.
 
@@ -96,7 +81,7 @@ Split the vertical slice into this exact order:
 6. battle
 7. save/load
 
-### PR 6 - bootstrap shell
+### PR 5 - bootstrap shell
 
 Add a minimal startup/composition root that can:
 
@@ -104,7 +89,7 @@ Add a minimal startup/composition root that can:
 - load one map shell;
 - expose a stable entry scene for future tests.
 
-### PR 7 - first world slice
+### PR 6 - first world slice
 
 Add:
 
@@ -113,7 +98,7 @@ Add:
 - collision;
 - one NPC interaction/dialogue.
 
-### PR 8 - encounter to battle path
+### PR 7 - encounter to battle path
 
 Add:
 
@@ -121,14 +106,14 @@ Add:
 - minimal battle entry;
 - minimal battle exit back to world.
 
-### PR 9 - save/load shell
+### PR 8 - save/load shell
 
 Add:
 
 - save snapshot;
 - restore to the correct location/state.
 
-### PR 10 - end-to-end vertical slice test
+### PR 9 - end-to-end vertical slice test
 
 Add one PlayMode test that covers:
 
@@ -158,7 +143,7 @@ Add one PlayMode test that covers:
 Stop and ask for human review if any of the following appears:
 
 - assembly cycles;
-- naming ADR requires a broad rename;
+- legacy `PokeBlack2` implementation names appear to block the planned `PokeBlack.*` asmdef skeleton;
 - importer design requires runtime access to raw exports;
 - save schema becomes coupled to scene objects;
 - a PR would need to touch more than one bounded context.

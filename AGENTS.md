@@ -12,17 +12,19 @@ This repository must not grow into a pile of ad-hoc MonoBehaviours, hidden scene
 2. Editor-only import seam: validated normalized content -> imported Unity assets.
 3. Runtime: pure gameplay state plus Unity presentation, with no direct dependency on ROMs or raw exports.
 
-## Temporary naming rule
+## Canonical naming rule
 
-The current repository name suggests `PokeBlack2`, while the long-term product identity still needs an ADR.
+The canonical product identity is `PokeBlack`.
 
-Until `docs/architecture/adr/ADR-0001-canonical-product-identity.md` is merged:
+The repository and workspace name `pokeblack2` is an operational path only. It is not the product name and not a naming directive for future assemblies.
 
-- use `PokeBlack2.*` as the temporary assembly and namespace prefix;
-- explicitly write `Black` vs `Black 2` in docs, prompts, and issue titles when it matters;
-- do not perform piecemeal renames.
+Use these rules:
 
-If the canonical identity changes later, do the rename in one dedicated PR before gameplay code spreads further.
+- use `PokeBlack.*` for new assembly and namespace prefixes introduced after `ADR-0001`;
+- explicitly write `Pokemon Black` vs `Pokemon Black 2` in docs, prompts, and issue titles when it matters;
+- do not perform piecemeal renames of existing `PokeBlack2` implementation symbols.
+
+If legacy `PokeBlack2` code or assets need to move to `PokeBlack`, do the rename in one dedicated PR before gameplay code spreads further.
 
 ## Non-negotiable architecture rules
 
@@ -68,14 +70,14 @@ Not allowed in runtime assemblies:
 Treat imported and generated assets as build products.
 
 - Change the normalized contract or the importer, not the generated output.
-- If a manual patch is necessary, place it in an authored override location such as `Assets/PokeBlack2/Content/AuthoredOverrides/`.
+- If a manual patch is necessary, place it in an authored override location such as `Assets/PokeBlack/Content/AuthoredOverrides/`.
 - Do not mix generated and hand-authored edits in the same folder.
 
 ### 4) Gameplay logic belongs in `Core`
 
 Business rules must live in pure C# domain code, not in view scripts.
 
-Examples that belong in `PokeBlack2.Core`:
+Examples that belong in `PokeBlack.Core`:
 
 - battle resolution;
 - move validation;
@@ -169,8 +171,8 @@ Use the assembly plan from `docs/architecture/asmdef-tree.md`.
 
 Hard rules:
 
-- `PokeBlack2.Core` must not reference `UnityEngine` or `UnityEditor`.
-- `PokeBlack2.Content.Contracts` must stay engine-agnostic.
+- `PokeBlack.Core` must not reference `UnityEngine` or `UnityEditor`.
+- `PokeBlack.Content.Contracts` must stay engine-agnostic.
 - `*.Editor` assemblies must be editor-only.
 - runtime assemblies must not reference `*.Editor` assemblies.
 - keep references one-way; if a cycle appears, stop and refactor instead of forcing it.
@@ -273,12 +275,11 @@ Use this structure in every PR description:
 
 Do these in order unless a human reprioritizes:
 
-1. Create `ADR-0001` to settle canonical product identity (`PokeBlack` vs `PokeBlack2`).
-2. Land the asmdef skeleton from `docs/architecture/asmdef-tree.md` without moving behavior yet.
-3. Add `ContentManifest` plus schema/content version checks.
-4. Add minimal fixture content so import smoke tests do not require a ROM.
-5. Add CI for EditMode smoke, PlayMode smoke, and manifest/version validation.
-6. Build the first vertical slice in bounded PRs following this sub-order:
+1. Land the asmdef skeleton from `docs/architecture/asmdef-tree.md` without moving behavior yet.
+2. Add `ContentManifest` plus schema/content version checks.
+3. Add minimal fixture content so import smoke tests do not require a ROM.
+4. Add CI for EditMode smoke, PlayMode smoke, and manifest/version validation.
+5. Build the first vertical slice in bounded PRs following this sub-order:
    - bootstrap
    - one map
    - movement
@@ -286,6 +287,6 @@ Do these in order unless a human reprioritizes:
    - encounter
    - battle
    - save/load
-7. Before the first vertical slice is playable, do not expand content import scope, do not do large-scale UI beautification, and do not add more maps.
+6. Before the first vertical slice is playable, do not expand content import scope, do not do large-scale UI beautification, and do not add more maps.
 
 When uncertain, optimize for clear boundaries and testability, not for raw feature count.

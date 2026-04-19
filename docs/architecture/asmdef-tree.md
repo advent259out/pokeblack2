@@ -6,9 +6,11 @@ Last updated: 2026-04-19
 
 ## Naming note
 
-This draft uses `PokeBlack2.*` as the temporary assembly prefix because it matches the current repository name.
+`ADR-0001-canonical-product-identity.md` settles the canonical product identity as `PokeBlack`.
 
-After `ADR-0001-canonical-product-identity.md` is decided, do a single dedicated rename PR if the prefix changes.
+This draft therefore uses `PokeBlack.*` for future asmdefs even though the repository/workspace path may still be `pokeblack2`.
+
+Any legacy implementation symbols that already use `PokeBlack2` remain transitional and must be renamed in one dedicated PR rather than piecemeal.
 
 ## Design goals
 
@@ -23,66 +25,66 @@ After `ADR-0001-canonical-product-identity.md` is decided, do a single dedicated
 
 ```text
 Assets/
-└── PokeBlack2/
+└── PokeBlack/
     ├── Bootstrap/
     │   ├── Runtime/
-    │   │   └── PokeBlack2.Bootstrap.asmdef
+    │   │   └── PokeBlack.Bootstrap.asmdef
     │   └── Tests/
     │       └── PlayMode/
-    │           └── PokeBlack2.Bootstrap.Tests.PlayMode.asmdef
+    │           └── PokeBlack.Bootstrap.Tests.PlayMode.asmdef
     │
     ├── Core/
     │   ├── Runtime/
-    │   │   └── PokeBlack2.Core.asmdef
+    │   │   └── PokeBlack.Core.asmdef
     │   └── Tests/
     │       └── EditMode/
-    │           └── PokeBlack2.Core.Tests.EditMode.asmdef
+    │           └── PokeBlack.Core.Tests.EditMode.asmdef
     │
     ├── Content/
     │   ├── Contracts/
-    │   │   └── PokeBlack2.Content.Contracts.asmdef
+    │   │   └── PokeBlack.Content.Contracts.asmdef
     │   ├── Runtime/
-    │   │   └── PokeBlack2.Content.Runtime.asmdef
+    │   │   └── PokeBlack.Content.Runtime.asmdef
     │   ├── Import/
     │   │   └── Editor/
-    │   │       └── PokeBlack2.Content.Import.Editor.asmdef
+    │   │       └── PokeBlack.Content.Import.Editor.asmdef
     │   ├── Generated/
     │   └── AuthoredOverrides/
     │
     ├── Infrastructure/
     │   ├── Runtime/
-    │   │   └── PokeBlack2.Infrastructure.asmdef
+    │   │   └── PokeBlack.Infrastructure.asmdef
     │   └── Editor/
-    │       └── PokeBlack2.Infrastructure.Editor.asmdef
+    │       └── PokeBlack.Infrastructure.Editor.asmdef
     │
     ├── World/
     │   ├── Runtime/
-    │   │   └── PokeBlack2.World.Runtime.asmdef
+    │   │   └── PokeBlack.World.Runtime.asmdef
     │   └── Tests/
     │       └── PlayMode/
-    │           └── PokeBlack2.World.Tests.PlayMode.asmdef
+    │           └── PokeBlack.World.Tests.PlayMode.asmdef
     │
     ├── Battle/
     │   ├── Runtime/
-    │   │   └── PokeBlack2.Battle.Runtime.asmdef
+    │   │   └── PokeBlack.Battle.Runtime.asmdef
     │   └── Tests/
     │       └── PlayMode/
-    │           └── PokeBlack2.Battle.Tests.PlayMode.asmdef
+    │           └── PokeBlack.Battle.Tests.PlayMode.asmdef
     │
     ├── UI/
     │   ├── Runtime/
-    │   │   └── PokeBlack2.UI.Runtime.asmdef
+    │   │   └── PokeBlack.UI.Runtime.asmdef
     │   └── Editor/
-    │       └── PokeBlack2.UI.Editor.asmdef
+    │       └── PokeBlack.UI.Editor.asmdef
     │
     └── Tools/
         └── Editor/
-            └── PokeBlack2.Tools.Editor.asmdef
+            └── PokeBlack.Tools.Editor.asmdef
 ```
 
 ## Assembly responsibilities
 
-### `PokeBlack2.Core`
+### `PokeBlack.Core`
 
 Pure gameplay and domain logic.
 
@@ -102,7 +104,7 @@ Must not contain:
 - asset loading;
 - animation or sprite code.
 
-### `PokeBlack2.Content.Contracts`
+### `PokeBlack.Content.Contracts`
 
 Versioned normalized DTO/contracts shared between tooling expectations and Unity import code.
 
@@ -119,7 +121,7 @@ Must not contain:
 - Unity asset types;
 - runtime services.
 
-### `PokeBlack2.Content.Runtime`
+### `PokeBlack.Content.Runtime`
 
 Imported definition assets and runtime lookup access.
 
@@ -136,7 +138,7 @@ Must not contain:
 - editor-only menus;
 - gameplay truth/state.
 
-### `PokeBlack2.Content.Import.Editor`
+### `PokeBlack.Content.Import.Editor`
 
 Editor-only validation and import seam.
 
@@ -153,7 +155,7 @@ Must not contain:
 - battle/world presentation;
 - scene logic.
 
-### `PokeBlack2.Infrastructure`
+### `PokeBlack.Infrastructure`
 
 Cross-cutting runtime services.
 
@@ -171,7 +173,7 @@ Must not contain:
 - importer logic;
 - large UI features.
 
-### `PokeBlack2.World.Runtime`
+### `PokeBlack.World.Runtime`
 
 Unity-side overworld adapters and presentation.
 
@@ -189,7 +191,7 @@ Must not contain:
 - battle formula logic;
 - importer logic.
 
-### `PokeBlack2.Battle.Runtime`
+### `PokeBlack.Battle.Runtime`
 
 Unity-side battle presentation and orchestration adapters.
 
@@ -206,7 +208,7 @@ Must not contain:
 - importer logic;
 - menu systems unrelated to battle.
 
-### `PokeBlack2.UI.Runtime`
+### `PokeBlack.UI.Runtime`
 
 Shared runtime menu/panel systems not specific to a single world or battle scene.
 
@@ -222,7 +224,7 @@ Must not contain:
 - editor tooling;
 - importer code.
 
-### `PokeBlack2.Bootstrap`
+### `PokeBlack.Bootstrap`
 
 Composition root and high-level game flow startup.
 
@@ -239,7 +241,7 @@ Must not contain:
 - raw content import;
 - duplicate world/battle logic.
 
-### `PokeBlack2.Tools.Editor`
+### `PokeBlack.Tools.Editor`
 
 General editor tooling that is not itself the import seam.
 
@@ -258,51 +260,51 @@ Must not contain:
 ## Allowed reference graph
 
 ```text
-PokeBlack2.Core
-PokeBlack2.Content.Contracts
+PokeBlack.Core
+PokeBlack.Content.Contracts
 
-PokeBlack2.Content.Runtime
-  -> PokeBlack2.Content.Contracts
+PokeBlack.Content.Runtime
+  -> PokeBlack.Content.Contracts
 
-PokeBlack2.Infrastructure
-  -> PokeBlack2.Core
-  -> PokeBlack2.Content.Runtime
+PokeBlack.Infrastructure
+  -> PokeBlack.Core
+  -> PokeBlack.Content.Runtime
 
-PokeBlack2.World.Runtime
-  -> PokeBlack2.Core
-  -> PokeBlack2.Content.Runtime
-  -> PokeBlack2.Infrastructure
+PokeBlack.World.Runtime
+  -> PokeBlack.Core
+  -> PokeBlack.Content.Runtime
+  -> PokeBlack.Infrastructure
 
-PokeBlack2.Battle.Runtime
-  -> PokeBlack2.Core
-  -> PokeBlack2.Content.Runtime
-  -> PokeBlack2.Infrastructure
+PokeBlack.Battle.Runtime
+  -> PokeBlack.Core
+  -> PokeBlack.Content.Runtime
+  -> PokeBlack.Infrastructure
 
-PokeBlack2.UI.Runtime
-  -> PokeBlack2.Core
-  -> PokeBlack2.Content.Runtime
-  -> PokeBlack2.Infrastructure
+PokeBlack.UI.Runtime
+  -> PokeBlack.Core
+  -> PokeBlack.Content.Runtime
+  -> PokeBlack.Infrastructure
 
-PokeBlack2.Bootstrap
-  -> PokeBlack2.Core
-  -> PokeBlack2.Content.Runtime
-  -> PokeBlack2.Infrastructure
-  -> PokeBlack2.World.Runtime
-  -> PokeBlack2.Battle.Runtime
-  -> PokeBlack2.UI.Runtime
+PokeBlack.Bootstrap
+  -> PokeBlack.Core
+  -> PokeBlack.Content.Runtime
+  -> PokeBlack.Infrastructure
+  -> PokeBlack.World.Runtime
+  -> PokeBlack.Battle.Runtime
+  -> PokeBlack.UI.Runtime
 
-PokeBlack2.Content.Import.Editor
-  -> PokeBlack2.Content.Contracts
-  -> PokeBlack2.Content.Runtime
+PokeBlack.Content.Import.Editor
+  -> PokeBlack.Content.Contracts
+  -> PokeBlack.Content.Runtime
 
-PokeBlack2.Infrastructure.Editor
-  -> PokeBlack2.Infrastructure
+PokeBlack.Infrastructure.Editor
+  -> PokeBlack.Infrastructure
 
-PokeBlack2.UI.Editor
-  -> PokeBlack2.UI.Runtime
+PokeBlack.UI.Editor
+  -> PokeBlack.UI.Runtime
 
-PokeBlack2.Tools.Editor
-  -> PokeBlack2.Content.Runtime
+PokeBlack.Tools.Editor
+  -> PokeBlack.Content.Runtime
 ```
 
 ## Forbidden reference patterns
@@ -310,8 +312,8 @@ PokeBlack2.Tools.Editor
 Do not allow:
 
 - runtime assemblies -> any `*.Editor` assembly;
-- `PokeBlack2.Core` -> `UnityEngine` or `UnityEditor`;
-- `PokeBlack2.Content.Runtime` -> `World`, `Battle`, `UI`, or `Bootstrap`;
+- `PokeBlack.Core` -> `UnityEngine` or `UnityEditor`;
+- `PokeBlack.Content.Runtime` -> `World`, `Battle`, `UI`, or `Bootstrap`;
 - `World.Runtime` <-> `Battle.Runtime` direct cyclic references;
 - `UI.Runtime` becoming a hidden dependency sink for all systems.
 
@@ -321,7 +323,7 @@ Do not allow:
 
 Use EditMode tests for:
 
-- `PokeBlack2.Core` deterministic logic;
+- `PokeBlack.Core` deterministic logic;
 - content manifest/version checks;
 - importer validation;
 - save serialization;
