@@ -1,0 +1,18 @@
+{
+  "name": "PokeBlack.UI.Runtime",
+  "rootNamespace": "PokeBlack.UI.Runtime",
+  "references": [
+    "PokeBlack.Core",
+    "PokeBlack.Content.Runtime",
+    "PokeBlack.Infrastructure"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
