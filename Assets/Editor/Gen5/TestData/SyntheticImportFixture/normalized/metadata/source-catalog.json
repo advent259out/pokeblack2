@@ -1,0 +1,91 @@
+{
+  "rom": {
+    "filename": "fixture.nds",
+    "game": "Synthetic Import Smoke Fixture",
+    "sha1": "0000000000000000000000000000000000000001",
+    "size": 1024
+  },
+  "sourceCount": 8,
+  "sources": [
+    {
+      "fileId": 10,
+      "group": "text",
+      "id": "system-text",
+      "largestMemberSize": 1,
+      "memberCount": 1,
+      "sha1": "1111111111111111111111111111111111111111",
+      "size": 1,
+      "sourcePath": "fixture/text/system"
+    },
+    {
+      "fileId": 11,
+      "group": "text",
+      "id": "event-text",
+      "largestMemberSize": 1,
+      "memberCount": 1,
+      "sha1": "2222222222222222222222222222222222222222",
+      "size": 1,
+      "sourcePath": "fixture/text/event"
+    },
+    {
+      "fileId": 20,
+      "group": "scripts",
+      "id": "script-containers",
+      "largestMemberSize": 1,
+      "memberCount": 1,
+      "sha1": "3333333333333333333333333333333333333333",
+      "size": 1,
+      "sourcePath": "fixture/scripts/main"
+    },
+    {
+      "fileId": 30,
+      "group": "maps",
+      "id": "map-containers",
+      "largestMemberSize": 1,
+      "memberCount": 1,
+      "sha1": "4444444444444444444444444444444444444444",
+      "size": 1,
+      "sourcePath": "fixture/maps/containers"
+    },
+    {
+      "fileId": 31,
+      "group": "maps",
+      "id": "zone-headers",
+      "largestMemberSize": 1,
+      "memberCount": 1,
+      "sha1": "5555555555555555555555555555555555555555",
+      "size": 1,
+      "sourcePath": "fixture/maps/zones"
+    },
+    {
+      "fileId": 32,
+      "group": "maps",
+      "id": "map-lookup",
+      "largestMemberSize": 1,
+      "memberCount": 1,
+      "sha1": "6666666666666666666666666666666666666666",
+      "size": 1,
+      "sourcePath": "fixture/maps/lookup"
+    },
+    {
+      "fileId": 33,
+      "group": "maps",
+      "id": "map-metadata-candidate",
+      "largestMemberSize": 0,
+      "memberCount": 0,
+      "sha1": "7777777777777777777777777777777777777777",
+      "size": 0,
+      "sourcePath": "fixture/maps/metadata"
+    },
+    {
+      "fileId": 34,
+      "group": "maps",
+      "id": "map-side-lookup-candidate",
+      "largestMemberSize": 1,
+      "memberCount": 1,
+      "sha1": "8888888888888888888888888888888888888888",
+      "size": 1,
+      "sourcePath": "fixture/maps/side-lookup"
+    }
+  ]
+}
