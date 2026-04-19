@@ -1,0 +1,29 @@
+# Unity generated folders
+/Library/
+/Temp/
+/Logs/
+/Obj/
+/UserSettings/
+
+# Unity generated project files
+/*.csproj
+/*.sln
+/*.user
+/*.userprefs
+/*.pidb
+/*.booproj
+/*.svd
+/*.pdb
+
+# IDE / tooling caches
+/.vs/
+/.idea/
+/.vscode/
+/.pytest_cache/
+/__pycache__/
+*.pyc
+
+# Local ROMs and exports
+/ROMs/*.nds
+/External/Exports/
+/Assets/Generated/
