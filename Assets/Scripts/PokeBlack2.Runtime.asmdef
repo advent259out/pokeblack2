@@ -1,7 +1,9 @@
 {
   "name": "PokeBlack2.Runtime",
   "rootNamespace": "PokeBlack2.Foundation.Runtime",
-  "references": [],
+  "references": [
+    "PokeBlack.Content.Runtime"
+  ],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
@@ -12,4 +14,3 @@
   "versionDefines": [],
   "noEngineReferences": false
 }
-

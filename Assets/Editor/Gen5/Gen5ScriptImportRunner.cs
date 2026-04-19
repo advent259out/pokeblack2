@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using PokeBlack.Content.Runtime;
 using PokeBlack2.Foundation.Runtime.Core;
 using PokeBlack2.Foundation.Runtime.Gen5.Contracts;
 using UnityEditor;
@@ -81,6 +82,8 @@ namespace PokeBlack2.Foundation.Editor
                 profileAssetPath,
                 () => ScriptableObject.CreateInstance<GameContentProfile>());
             profile.name = "GameContentProfile";
+            ContentManifest contentManifest = ContentManifestImportUtility.ImportForSession(session, normalizedGeneratedAssetsRoot);
+            profile.ApplyContentManifest(contentManifest);
             profile.ApplyImportedScriptDatabase(scriptDatabase);
             EditorUtility.SetDirty(profile);
 
@@ -92,6 +95,8 @@ namespace PokeBlack2.Foundation.Editor
                 RootPath = session.RootPath,
                 GeneratedAssetsRoot = normalizedGeneratedAssetsRoot,
                 ProfileAssetPath = profileAssetPath,
+                ContentManifestAssetPath = AssetDatabase.GetAssetPath(contentManifest),
+                ContentVersion = contentManifest.ContentVersion,
                 ScriptDatabaseAssetPath = scriptDatabaseAssetPath,
                 ProgramCount = programs.Length,
                 ProcedureCount = CountProcedures(programs),
@@ -627,6 +632,8 @@ namespace PokeBlack2.Foundation.Editor
         public string RootPath { get; set; } = string.Empty;
         public string GeneratedAssetsRoot { get; set; } = string.Empty;
         public string ProfileAssetPath { get; set; } = string.Empty;
+        public string ContentManifestAssetPath { get; set; } = string.Empty;
+        public string ContentVersion { get; set; } = string.Empty;
         public string ScriptDatabaseAssetPath { get; set; } = string.Empty;
         public int ProgramCount { get; set; }
         public int ProcedureCount { get; set; }
@@ -637,7 +644,7 @@ namespace PokeBlack2.Foundation.Editor
         public string FormatSummary()
         {
             return
-                $"Imported {ProgramCount} script programs, {ProcedureCount} decoded procedures, {ParsedProcedureCount} fully parsed procedures, {DialogueLineCount} dialogue lines, and {ResolvedDialogueTextReferenceCount} resolved text references from '{RootPath}' into '{ScriptDatabaseAssetPath}' and '{ProfileAssetPath}'.";
+                $"Imported {ProgramCount} script programs, {ProcedureCount} decoded procedures, {ParsedProcedureCount} fully parsed procedures, {DialogueLineCount} dialogue lines, and {ResolvedDialogueTextReferenceCount} resolved text references from '{RootPath}' into '{ScriptDatabaseAssetPath}', '{ProfileAssetPath}', and '{ContentManifestAssetPath}' (contentVersion={ContentVersion}).";
         }
     }
 

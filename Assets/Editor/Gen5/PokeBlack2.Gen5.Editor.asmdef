@@ -2,7 +2,9 @@
   "name": "PokeBlack2.Gen5.Editor",
   "rootNamespace": "PokeBlack2.Foundation.Editor",
   "references": [
-    "PokeBlack2.Runtime"
+    "PokeBlack2.Runtime",
+    "PokeBlack.Content.Contracts",
+    "PokeBlack.Content.Runtime"
   ],
   "includePlatforms": [
     "Editor"

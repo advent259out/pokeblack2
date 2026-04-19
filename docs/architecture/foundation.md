@@ -62,8 +62,11 @@ The runtime surface is intentionally small:
 
 - `GameVersion`
 - `GameContentProfile`
+- `ContentManifest`
 - `RuntimeContentAccessGuard`
 - `FoundationBootstrap`
 - Gen5 DTO/contract placeholders under `Assets/Scripts/Gen5/Contracts`
+
+`GameContentProfile` may reference a validated `ContentManifest`, but runtime code still consumes only imported Unity assets and versioned contract metadata. It must not parse extraction manifests or walk export folders directly.
 
 These types define the dependency direction for future world, script, battle, and save systems. They must stay free of FireRed, GBA tilemap, or ROM-reader assumptions.

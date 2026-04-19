@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using PokeBlack.Content.Runtime;
 using PokeBlack2.Foundation.Runtime.Core;
 using PokeBlack2.Foundation.Runtime.Gen5.Contracts;
 using UnityEditor;
@@ -84,6 +85,8 @@ namespace PokeBlack2.Foundation.Editor
                 profileAssetPath,
                 () => ScriptableObject.CreateInstance<GameContentProfile>());
             profile.name = "GameContentProfile";
+            ContentManifest contentManifest = ContentManifestImportUtility.ImportForSession(session, normalizedGeneratedAssetsRoot);
+            profile.ApplyContentManifest(contentManifest);
             profile.ApplyImportedWorldDatabase(worldDatabase);
             EditorUtility.SetDirty(profile);
 
@@ -95,6 +98,8 @@ namespace PokeBlack2.Foundation.Editor
                 RootPath = session.RootPath,
                 GeneratedAssetsRoot = normalizedGeneratedAssetsRoot,
                 ProfileAssetPath = profileAssetPath,
+                ContentManifestAssetPath = AssetDatabase.GetAssetPath(contentManifest),
+                ContentVersion = contentManifest.ContentVersion,
                 WorldDatabaseAssetPath = worldDatabaseAssetPath,
                 SceneCount = scenes.Length,
                 MapReferenceCount = mapReferences.Length,
@@ -956,6 +961,8 @@ namespace PokeBlack2.Foundation.Editor
         public string RootPath { get; set; } = string.Empty;
         public string GeneratedAssetsRoot { get; set; } = string.Empty;
         public string ProfileAssetPath { get; set; } = string.Empty;
+        public string ContentManifestAssetPath { get; set; } = string.Empty;
+        public string ContentVersion { get; set; } = string.Empty;
         public string WorldDatabaseAssetPath { get; set; } = string.Empty;
         public int SceneCount { get; set; }
         public int MapReferenceCount { get; set; }
@@ -966,7 +973,7 @@ namespace PokeBlack2.Foundation.Editor
         public string FormatSummary()
         {
             return
-                $"Imported {SceneCount} world scenes, {MapSideLookupCount} map side lookups, and {ScriptBindingCount} script bindings from '{RootPath}' into '{WorldDatabaseAssetPath}' and '{ProfileAssetPath}'.";
+                $"Imported {SceneCount} world scenes, {MapSideLookupCount} map side lookups, and {ScriptBindingCount} script bindings from '{RootPath}' into '{WorldDatabaseAssetPath}', '{ProfileAssetPath}', and '{ContentManifestAssetPath}' (contentVersion={ContentVersion}).";
         }
     }
 
