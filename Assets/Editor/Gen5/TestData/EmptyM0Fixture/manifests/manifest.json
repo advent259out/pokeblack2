@@ -1,0 +1,35 @@
+{
+  "exportRoot": "Assets/Editor/Gen5/TestData/EmptyM0Fixture",
+  "game": "pokemon-black",
+  "generatedAt": "2026-04-18T00:00:00Z",
+  "hashes": {
+    "Assets/Editor/Gen5/TestData/EmptyM0Fixture/normalized/metadata/contract-placeholder.json": "3ee2a1715d6e2064c51312659a5273762e639817",
+    "Assets/Editor/Gen5/TestData/EmptyM0Fixture/normalized/metadata/rom-info.json": "c745804403a93e06bd79ec91fada0aca3c5fd6bd",
+    "Assets/Editor/Gen5/TestData/EmptyM0Fixture/normalized/metadata/source-catalog.json": "da8fd53f67234ab8432bf90de649f9057d86e633",
+    "Assets/Editor/Gen5/TestData/EmptyM0Fixture/normalized/text/index.json": "38c33caa2b8b5090464ed4d980a8c36ca6ab0226"
+  },
+  "normalizedOutputs": [
+    {
+      "hash": "3ee2a1715d6e2064c51312659a5273762e639817",
+      "path": "Assets/Editor/Gen5/TestData/EmptyM0Fixture/normalized/metadata/contract-placeholder.json"
+    },
+    {
+      "hash": "c745804403a93e06bd79ec91fada0aca3c5fd6bd",
+      "path": "Assets/Editor/Gen5/TestData/EmptyM0Fixture/normalized/metadata/rom-info.json"
+    },
+    {
+      "hash": "da8fd53f67234ab8432bf90de649f9057d86e633",
+      "path": "Assets/Editor/Gen5/TestData/EmptyM0Fixture/normalized/metadata/source-catalog.json"
+    },
+    {
+      "hash": "38c33caa2b8b5090464ed4d980a8c36ca6ab0226",
+      "path": "Assets/Editor/Gen5/TestData/EmptyM0Fixture/normalized/text/index.json"
+    }
+  ],
+  "rom": {
+    "filename": "pokeblack.nds",
+    "sha1": "a68b3bedf5c1e53556e41e59cdf396c20b331896",
+    "size": 268435456
+  },
+  "schemaVersion": 1
+}

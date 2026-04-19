@@ -1,0 +1,21 @@
+{
+  "name": "PokeBlack2.Gen5.Editor",
+  "rootNamespace": "PokeBlack2.Foundation.Editor",
+  "references": [
+    "PokeBlack2.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}
