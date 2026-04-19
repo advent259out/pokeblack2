@@ -129,7 +129,8 @@ Contains:
 
 - `ScriptableObject` definitions;
 - lookup/index builders used at runtime;
-- manifest access;
+- `ContentManifest` access;
+- schema/content version metadata consumed by runtime bootstrap;
 - content registry/adapters for runtime reads.
 
 Must not contain:

@@ -4,6 +4,8 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using NUnit.Framework;
+using PokeBlack.Content.Contracts;
+using PokeBlack.Content.Runtime;
 using PokeBlack2.Foundation.Runtime.Bootstrap;
 using PokeBlack2.Foundation.Runtime.Core;
 using PokeBlack2.Foundation.Runtime.Gen5.Contracts;
@@ -316,6 +318,7 @@ namespace PokeBlack2.Foundation.Editor
                 Assert.That(profile, Is.Not.Null);
                 Assert.That(profile.GameVersion, Is.EqualTo(GameVersion.PokemonBlackUsaEurope));
                 Assert.That(profile.StrictOfflineBoundaries, Is.True);
+                Assert.That(profile.HasContentManifest, Is.False);
             }
             finally
             {
@@ -345,10 +348,18 @@ namespace PokeBlack2.Foundation.Editor
 
                 Gen5TextDatabaseAsset textDatabase = AssetDatabase.LoadAssetAtPath<Gen5TextDatabaseAsset>(artifacts.TextDatabaseAssetPath);
                 GameContentProfile profile = AssetDatabase.LoadAssetAtPath<GameContentProfile>(artifacts.ProfileAssetPath);
+                ContentManifest contentManifest = AssertImportedContentManifest(
+                    profile,
+                    artifacts.ContentManifestAssetPath,
+                    artifacts.ContentVersion,
+                    expectedPresentGroups: new[] { "text" },
+                    expectedAbsentGroups: new[] { "maps", "scripts" });
 
                 Assert.That(textDatabase, Is.Not.Null);
                 Assert.That(profile, Is.Not.Null);
                 Assert.That(profile.LoadTextDatabase(), Is.SameAs(textDatabase));
+                Assert.That(artifacts.ContentManifestAssetPath, Is.EqualTo(CreateGeneratedContentManifestAssetPath(generatedAssetsRoot)));
+                Assert.That(contentManifest.AvailableGroups, Is.EqualTo(new[] { "text" }));
                 Assert.That(textDatabase.ArchiveCount, Is.EqualTo(2));
                 Assert.That(textDatabase.EntryCount, Is.EqualTo(760));
                 Assert.That(textDatabase.DecodedMessageCount, Is.EqualTo(56700));
@@ -377,6 +388,65 @@ namespace PokeBlack2.Foundation.Editor
             finally
             {
                 DeleteAssetTree(generatedAssetsRoot);
+            }
+        }
+
+        [Test]
+        public void TextImportRunner_Rejects_Preexisting_ContentManifest_With_Unsupported_Schema()
+        {
+            string root = CreateCanonicalTextImportSessionRoot();
+            string generatedAssetsRoot = CreateTemporaryGeneratedAssetsRoot();
+
+            try
+            {
+                CreateGeneratedContentManifestAsset(
+                    generatedAssetsRoot,
+                    new ContentManifestData
+                    {
+                        SchemaVersion = 999,
+                        Version = new ContentVersionInfo
+                        {
+                            SourceSchemaVersion = Gen5ImportProfile.SchemaVersion,
+                            ContentVersion = "0123456789abcdef0123456789abcdef01234567",
+                        },
+                        GameId = Gen5ImportProfile.GameId,
+                        ContractFamily = GameContentProfile.DefaultContractFamily,
+                        ProfileId = GameContentProfile.DefaultProfileId,
+                        RomFilename = "pokeblack.nds",
+                        RomSha1 = "a68b3bedf5c1e53556e41e59cdf396c20b331896",
+                        RomSize = 268435456,
+                        SourceGeneratedAt = "2026-04-18T00:00:00Z",
+                        AvailableGroups = new[] { "text" },
+                    });
+
+                Assert.Throws<InvalidDataException>(() => Gen5TextImportRunner.ImportFromRoot(root, generatedAssetsRoot));
+            }
+            finally
+            {
+                DeleteAssetTree(generatedAssetsRoot);
+            }
+        }
+
+        [Test]
+        public void TextImportRunner_Produces_Stable_ContentVersion_For_Identical_Input()
+        {
+            string root = CreateCanonicalTextImportSessionRoot();
+            string generatedAssetsRootA = CreateTemporaryGeneratedAssetsRoot();
+            string generatedAssetsRootB = CreateTemporaryGeneratedAssetsRoot();
+
+            try
+            {
+                Gen5TextImportArtifactSet artifactsA = Gen5TextImportRunner.ImportFromRoot(root, generatedAssetsRootA);
+                Gen5TextImportArtifactSet artifactsB = Gen5TextImportRunner.ImportFromRoot(root, generatedAssetsRootB);
+
+                Assert.That(artifactsA.ContentVersion, Is.EqualTo(artifactsB.ContentVersion));
+                Assert.That(artifactsA.ContentVersion, Has.Length.EqualTo(40));
+                Assert.That(artifactsA.ContentManifestAssetPath, Is.Not.EqualTo(artifactsB.ContentManifestAssetPath));
+            }
+            finally
+            {
+                DeleteAssetTree(generatedAssetsRootA);
+                DeleteAssetTree(generatedAssetsRootB);
             }
         }
 
@@ -467,12 +537,20 @@ namespace PokeBlack2.Foundation.Editor
                 Gen5TextDatabaseAsset textDatabase = AssetDatabase.LoadAssetAtPath<Gen5TextDatabaseAsset>(Gen5ImportProfile.CanonicalTextDatabaseAssetPath.Replace("Assets/Generated", generatedAssetsRoot));
                 Gen5ScriptDatabaseAsset scriptDatabase = AssetDatabase.LoadAssetAtPath<Gen5ScriptDatabaseAsset>(artifacts.ScriptDatabaseAssetPath);
                 GameContentProfile profile = AssetDatabase.LoadAssetAtPath<GameContentProfile>(artifacts.ProfileAssetPath);
+                ContentManifest contentManifest = AssertImportedContentManifest(
+                    profile,
+                    artifacts.ContentManifestAssetPath,
+                    artifacts.ContentVersion,
+                    expectedPresentGroups: new[] { "maps", "scripts", "text" },
+                    expectedAbsentGroups: new[] { "pokemon" });
 
                 Assert.That(textDatabase, Is.Not.Null);
                 Assert.That(scriptDatabase, Is.Not.Null);
                 Assert.That(profile, Is.Not.Null);
                 Assert.That(profile.LoadTextDatabase(), Is.SameAs(textDatabase));
                 Assert.That(profile.LoadScriptDatabase(), Is.SameAs(scriptDatabase));
+                Assert.That(artifacts.ContentManifestAssetPath, Is.EqualTo(CreateGeneratedContentManifestAssetPath(generatedAssetsRoot)));
+                Assert.That(contentManifest.AvailableGroups, Is.EqualTo(new[] { "maps", "scripts", "text" }));
                 Assert.That(scriptDatabase.ProgramCount, Is.EqualTo(899));
                 Assert.That(scriptDatabase.ProcedureCount, Is.EqualTo(3317));
                 Assert.That(scriptDatabase.ParsedProcedureCount, Is.EqualTo(535));
@@ -513,10 +591,18 @@ namespace PokeBlack2.Foundation.Editor
                 Gen5WorldImportArtifactSet artifacts = Gen5WorldImportRunner.ImportFromRoot(root, generatedAssetsRoot);
                 Gen5WorldDatabaseAsset worldDatabase = AssetDatabase.LoadAssetAtPath<Gen5WorldDatabaseAsset>(artifacts.WorldDatabaseAssetPath);
                 GameContentProfile profile = AssetDatabase.LoadAssetAtPath<GameContentProfile>(artifacts.ProfileAssetPath);
+                ContentManifest contentManifest = AssertImportedContentManifest(
+                    profile,
+                    artifacts.ContentManifestAssetPath,
+                    artifacts.ContentVersion,
+                    expectedPresentGroups: new[] { "maps" },
+                    expectedAbsentGroups: new[] { "text", "scripts" });
 
                 Assert.That(worldDatabase, Is.Not.Null);
                 Assert.That(profile, Is.Not.Null);
                 Assert.That(profile.LoadWorldDatabase(), Is.SameAs(worldDatabase));
+                Assert.That(artifacts.ContentManifestAssetPath, Is.EqualTo(CreateGeneratedContentManifestAssetPath(generatedAssetsRoot)));
+                Assert.That(contentManifest.AvailableGroups, Is.EqualTo(new[] { "maps" }));
                 Assert.That(worldDatabase.SceneCount, Is.EqualTo(427));
                 Assert.That(worldDatabase.MapReferenceCount, Is.EqualTo(650));
                 Assert.That(worldDatabase.MapRouteCount, Is.EqualTo(650));
@@ -876,6 +962,93 @@ namespace PokeBlack2.Foundation.Editor
             {
                 AssetDatabase.DeleteAsset(assetFolderPath);
             }
+        }
+
+        private static ContentManifest AssertImportedContentManifest(
+            GameContentProfile profile,
+            string contentManifestAssetPath,
+            string expectedContentVersion,
+            string[] expectedPresentGroups,
+            string[] expectedAbsentGroups)
+        {
+            ContentManifest contentManifest = AssetDatabase.LoadAssetAtPath<ContentManifest>(contentManifestAssetPath);
+
+            Assert.That(profile, Is.Not.Null);
+            Assert.That(contentManifest, Is.Not.Null);
+            Assert.That(profile.HasContentManifest, Is.True);
+            Assert.That(profile.LoadContentManifest(), Is.SameAs(contentManifest));
+            Assert.That(profile.Manifest, Is.SameAs(contentManifest));
+            Assert.DoesNotThrow(profile.EnsureValid);
+            Assert.That(contentManifest.SchemaVersion, Is.EqualTo(ContentSchemaVersions.ContentManifest));
+            Assert.That(contentManifest.SourceSchemaVersion, Is.EqualTo(Gen5ImportProfile.SchemaVersion));
+            Assert.That(contentManifest.Version, Is.Not.Null);
+            Assert.That(contentManifest.ContentVersion, Is.EqualTo(expectedContentVersion));
+            Assert.That(contentManifest.ContentVersion, Has.Length.EqualTo(40));
+            Assert.That(contentManifest.GameId, Is.EqualTo(Gen5ImportProfile.GameId));
+            Assert.That(contentManifest.ContractFamily, Is.EqualTo(profile.ContractFamily));
+            Assert.That(contentManifest.ProfileId, Is.EqualTo(profile.ProfileId));
+            Assert.That(contentManifest.RomFilename, Is.EqualTo("pokeblack.nds"));
+            Assert.That(contentManifest.RomSha1, Is.EqualTo("a68b3bedf5c1e53556e41e59cdf396c20b331896"));
+            Assert.That(contentManifest.RomSize, Is.EqualTo(268435456));
+            Assert.That(contentManifest.SourceGeneratedAt, Is.Not.Empty);
+
+            foreach (string groupName in expectedPresentGroups ?? Array.Empty<string>())
+            {
+                Assert.That(contentManifest.ContainsGroup(groupName), Is.True, $"Expected ContentManifest to contain group '{groupName}'.");
+            }
+
+            foreach (string groupName in expectedAbsentGroups ?? Array.Empty<string>())
+            {
+                Assert.That(contentManifest.ContainsGroup(groupName), Is.False, $"Expected ContentManifest to exclude group '{groupName}'.");
+            }
+
+            return contentManifest;
+        }
+
+        private static ContentManifest CreateGeneratedContentManifestAsset(string generatedAssetsRoot, ContentManifestData data)
+        {
+            string assetPath = CreateGeneratedContentManifestAssetPath(generatedAssetsRoot);
+            EnsureAssetFolder(Path.GetDirectoryName(assetPath)?.Replace('\\', '/'));
+
+            ContentManifest contentManifest = ScriptableObject.CreateInstance<ContentManifest>();
+            contentManifest.name = "ContentManifest";
+            contentManifest.Configure(data);
+            AssetDatabase.CreateAsset(contentManifest, assetPath);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            return contentManifest;
+        }
+
+        private static string CreateGeneratedContentManifestAssetPath(string generatedAssetsRoot)
+        {
+            return NormalizeAssetPath(Gen5ImportProfile.CanonicalContentManifestAssetPath.Replace("Assets/Generated", NormalizeAssetPath(generatedAssetsRoot)));
+        }
+
+        private static void EnsureAssetFolder(string assetFolderPath)
+        {
+            if (string.IsNullOrWhiteSpace(assetFolderPath))
+            {
+                throw new ArgumentException("Asset folder path cannot be null or whitespace.", nameof(assetFolderPath));
+            }
+
+            string normalizedPath = NormalizeAssetPath(assetFolderPath);
+            string[] segments = normalizedPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+            string currentPath = segments[0];
+            for (int index = 1; index < segments.Length; index++)
+            {
+                string nextPath = $"{currentPath}/{segments[index]}";
+                if (!AssetDatabase.IsValidFolder(nextPath))
+                {
+                    AssetDatabase.CreateFolder(currentPath, segments[index]);
+                }
+
+                currentPath = nextPath;
+            }
+        }
+
+        private static string NormalizeAssetPath(string assetPath)
+        {
+            return assetPath.Replace('\\', '/').TrimEnd('/');
         }
 
         private static string CreateTemporaryImportSessionRoot(

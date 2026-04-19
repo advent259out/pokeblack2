@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using PokeBlack.Content.Runtime;
 using PokeBlack2.Foundation.Runtime.Core;
 using PokeBlack2.Foundation.Runtime.Gen5.Contracts;
 using UnityEditor;
@@ -77,6 +78,8 @@ namespace PokeBlack2.Foundation.Editor
                 profileAssetPath,
                 () => ScriptableObject.CreateInstance<GameContentProfile>());
             profile.name = "GameContentProfile";
+            ContentManifest contentManifest = ContentManifestImportUtility.ImportForSession(session, normalizedGeneratedAssetsRoot);
+            profile.ApplyContentManifest(contentManifest);
             profile.ApplyImportedTextDatabase(textDatabase);
             EditorUtility.SetDirty(profile);
 
@@ -99,6 +102,8 @@ namespace PokeBlack2.Foundation.Editor
                 RootPath = session.RootPath,
                 GeneratedAssetsRoot = normalizedGeneratedAssetsRoot,
                 ProfileAssetPath = profileAssetPath,
+                ContentManifestAssetPath = AssetDatabase.GetAssetPath(contentManifest),
+                ContentVersion = contentManifest.ContentVersion,
                 TextDatabaseAssetPath = textDatabaseAssetPath,
                 ArchiveCount = archives.Length,
                 EntryCount = entryCount,
@@ -486,6 +491,8 @@ namespace PokeBlack2.Foundation.Editor
         public string RootPath { get; set; } = string.Empty;
         public string GeneratedAssetsRoot { get; set; } = string.Empty;
         public string ProfileAssetPath { get; set; } = string.Empty;
+        public string ContentManifestAssetPath { get; set; } = string.Empty;
+        public string ContentVersion { get; set; } = string.Empty;
         public string TextDatabaseAssetPath { get; set; } = string.Empty;
         public int ArchiveCount { get; set; }
         public int EntryCount { get; set; }
@@ -494,7 +501,7 @@ namespace PokeBlack2.Foundation.Editor
         public string FormatSummary()
         {
             return
-                $"Imported {ArchiveCount} text archives, {EntryCount} text banks, and {DecodedMessageCount} decoded text messages from '{RootPath}' into '{TextDatabaseAssetPath}' and '{ProfileAssetPath}'.";
+                $"Imported {ArchiveCount} text archives, {EntryCount} text banks, and {DecodedMessageCount} decoded text messages from '{RootPath}' into '{TextDatabaseAssetPath}', '{ProfileAssetPath}', and '{ContentManifestAssetPath}' (contentVersion={ContentVersion}).";
         }
     }
 }

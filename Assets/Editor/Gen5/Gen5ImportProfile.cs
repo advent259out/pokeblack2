@@ -27,6 +27,7 @@ namespace PokeBlack2.Foundation.Editor
         public const string GeneratedAssetsRoot = "Assets/Generated";
         public const string GeneratedResourcesRoot = "Assets/Generated/Resources";
         public const string CanonicalProfileAssetPath = "Assets/Generated/Resources/Foundation/GameContentProfile.asset";
+        public const string CanonicalContentManifestAssetPath = "Assets/Generated/Resources/Foundation/ContentManifest.asset";
         public const string CanonicalScriptDatabaseAssetPath = "Assets/Generated/Resources/Imported/Gen5/Scripts/CanonicalGen5ScriptDatabase.asset";
         public const string CanonicalTextDatabaseAssetPath = "Assets/Generated/Resources/Imported/Gen5/Text/CanonicalGen5TextDatabase.asset";
         public const string CanonicalWorldDatabaseAssetPath = "Assets/Generated/Resources/Imported/Gen5/World/CanonicalGen5WorldDatabase.asset";

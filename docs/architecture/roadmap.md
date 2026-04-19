@@ -60,6 +60,7 @@ Make the repository safe for parallel human plus AI work.
 - asmdef skeleton landed with no behavior moves.
 - `ContentManifest` introduced.
 - schema/content version checks introduced.
+- imported `GameContentProfile` assets carry a validated `ContentManifest` with schema version and deterministic content version metadata.
 - a minimal fixture content dataset committed.
 - CI runs EditMode smoke, PlayMode smoke, and manifest/version validation.
 
@@ -257,6 +258,7 @@ Mitigation:
 - add asmdef skeleton only;
 - add docs for assembly references and folder ownership;
 - introduce `ContentManifest` and schema/content version structure.
+- prove that editor import writes a runtime-readable content manifest before fixture/CI work begins.
 
 ### Week 2
 
